@@ -91,7 +91,7 @@ Despite the availability of large herbarium datasets, workflows for integrative 
 
 The pipeline is organized into four integrated modules, each drawing on a dedicated set of `moRphoTaxa` package functions:
 
-### 1. Get Herbarium Data
+#### 1. Get Herbarium Data
 
 - Multi-taxon querying  
 - Automated retrieval from major biodiversity repositories (e.g., **REFLORA**, **JABOT**, **speciesLink**, and **GBIF**)  
@@ -101,7 +101,7 @@ This module establishes a comprehensive and reproducible specimen foundation.
 
 ---
 
-### 2. Clean Occurrence Data
+#### 2. Clean Occurrence Data
 
 - Standardization of Darwin Core-style fields  
 - Filtering out incomplete occurrence records (e.g. unvouchered materials)
@@ -113,7 +113,7 @@ This stage ensures analytical stability by producing a curated dataset before mo
 
 ---
 
-### 3. Add Morphological Traits
+#### 3. Add Morphological Traits
 
 - Predefined quantitative and qualitative trait templates, built into the `moRphoTaxa` package via `morph_add_traits()`  
 - Group-specific presets (e.g., Papilionoideae, Asteraceae, Passifloraceae, and other angiosperm and non-angiosperm structures)
@@ -125,7 +125,7 @@ By enforcing consistency in character definition and matrix architecture, the pa
 
 ---
 
-### 4. Morphometric and Ecogeographic Inference
+#### 4. Morphometric and Ecogeographic Inference
 
 - Principal Component Analysis (PCA) and other ordination methods (PCoA, NMDS), via the package's `morph_pca()`, `morph_pcoa()`, and `morph_nmds()` functions
 - K-means clustering, mixture-model clustering, and group detection, via `morph_kmeans()` and `morph_nmm()`
