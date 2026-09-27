@@ -1,0 +1,150 @@
+---
+title: "Clean Occurrence Data"
+format:
+  html:
+    toc: true
+execute:
+  cache: true
+  freeze: auto
+---
+
+## What this script does
+
+Clean and standardize herbarium specimen records previously downloaded from biodiversity databases.The workflow uses the `barRoso` package, which standardizes biodiversity occurrence datasets and flags common issues such as duplicates, missing identifications, and problematic collections.
+
+## Setup
+
+Load the R packages required for taxonomic and dataset standardization.
+
+```{r eval = FALSE}
+
+#install.packages("devtools")
+
+# LCVP: https://github.com/idiv-biodiversity/LCVP
+#devtools::install_github("idiv-biodiversity/LCVP")
+library(LCVP)
+
+# lcvplants: https://github.com/idiv-biodiversity/lcvplants
+#devtools::install_github("idiv-biodiversity/lcvplants")
+library(lcvplants)
+
+# barRoso: https://github.com/DBOSlab/barRoso
+#devtools::install_github("DBOSlab/barRoso")
+library(barRoso)
+```
+
+Load general packages to operate data frames and export to **Excel**.
+
+```{r eval = FALSE}
+
+#install.packages(dplyr)
+library(dplyr)
+
+#install.packages(openxlsx)
+library(openxlsx)
+```
+
+Load auxiliary functions for the script.
+
+```{r eval = FALSE}
+
+source("functions/auxiliary_functions.R")
+```
+
+Load the merged dataset generated in the previous step of the pipeline, if it is not already present in the **R** environment.
+
+```{r eval = FALSE}
+
+all_data <- read.xlsx("output_data/")
+```
+
+Create folders in the directory to save the occurrence data:
+
+```{r eval = FALSE}
+
+if (!dir.exists("output_data/")) dir.create("output_data/", recursive = TRUE)
+
+timestamp_tag <- format(Sys.time(), "%d%b%Y")
+clean_data_path <- file.path("output_data/", paste0("clean_data_",  timestamp_tag, ".xlsx"))
+```
+
+## Harmonize dataset structure
+
+Convert country names to standard English format using a auxiliary function.
+
+```{r eval = FALSE}
+if ("country" %in% names(all_data)) {
+  all_data$country <- convert_country_EN(all_data$country)
+}
+```
+
+Different biodiversity databases provide slightly different field structures.The following step harmonizes the dataset structure by selecting relevant fields and inserting missing columns.
+
+```{r eval = FALSE}
+cols <- c(names(data_reflora))
+
+cols <- insert_after_word(cols, c(
+  basisOfRecord = "gbifID",
+  stateProvince = "county",
+  scientificName = "acceptedScientificName",
+  maximumElevationInMeters = "elevation",
+  identificationRemarks = "vernacularName",
+  identificationRemarks = "eventRemarks",
+  fieldNotes = "habitat",
+  day = "lifeStage",
+  catalogNumber = "barcode"
+))
+
+all_data <- all_data %>%
+  select(any_of(cols)) %>%
+  filter(basisOfRecord %in% c("PRESERVED_SPECIMEN", "Preservedspecimen"))
+```
+
+## Clean the dataset
+
+The `barroso_std()` function performs several cleaning and validation procedures for herbarium occurrence datasets. These procedures are controlled by function arguments and can be enabled depending on the user's objectives.
+
+In this example, the function:
+
+-   Flags possible misidentifications (`flag_missid`)
+
+-   Detects duplicate specimens (`flag_duplicates`)
+
+-   Removes duplicated records (`rm_duplicates`)
+
+-   Identifies unvouchered records (`unvouchered`)
+
+-   Removes problematic collections (`delunkcoll`)
+
+Additional arguments and options can be explored in the function documentation using `?barroso_std()`.
+
+```{r eval = FALSE}
+clean_data <- barRoso::barroso_std(
+  all_data,
+  unvouchered = TRUE,
+  delunkcoll = TRUE,
+  flag_missid = TRUE,
+  flag_duplicates = TRUE,
+  rm_duplicates = TRUE,
+  rm_original_column = TRUE
+)
+```
+
+## Export the cleaned dataset
+
+Export the cleaned dataset to **Excel** for manual inspection and correction.
+
+```{r eval = FALSE}
+
+openxlsx::write.xlsx(clean_data, file = clean_data_path)
+}
+```
+
+## Reload the dataset after manual corrections (optional)
+
+You may need to make manual corrections on the formatting of the collector names, for example. If needed, the `barroso_std()` function can be executed again after manual edits to ensure the dataset remains standardized.
+
+```{r eval = FALSE}
+
+clean_data <- read.xlsx("output_data/clean_data_20260112_160824.xlsx")
+```

@@ -1,0 +1,168 @@
+---
+title: 'morph_pcoa'
+description: 'Run PCoA on morphological trait blocks'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::morph_pcoa()
+```
+
+### Description
+
+Performs principal coordinates analysis (PCoA) on morphological trait
+blocks derived from a morphometric matrix, and generates a standard set of
+diagnostic figures for each trait block analyzed. The function is designed
+to work directly on the objects produced by `morph_matrix_setting()`, and
+mirrors the structure of `morph_pca()`.
+
+For each requested trait block, the function computes a specimen-by-specimen
+distance matrix, fits a PCoA, saves an ordination biplot with marginal
+density panels and vectors for the traits most correlated with the first
+two axes, saves a barplot of the correlation of the top traits with each of
+these axes, saves a barplot of the variation explained by the first axes,
+and, when at least three axes are available, saves a panel of pairwise
+scatterplots (PCo1 x PCo2, PCo1 x PCo3, PCo2 x PCo3).
+
+### Details
+
+`morph_pcoa()` expects `analysis_data` as produced by
+`morph_matrix_setting()`: a numeric data frame with `id` and `taxon`
+columns plus one column per morphological trait, with specimen IDs as row
+names. The trait blocks (`"veg"`, `"flo"`, `"fru"`, or any subset thereof)
+are not passed in separately: they are read directly from the
+`"base_cols"` attribute that `morph_matrix_setting()` attaches to
+`analysis_data`. If `analysis_data` has no `"base_cols"` attribute (e.g.
+it was not built with `morph_matrix_setting()`, or the attribute was
+dropped by an intervening subsetting operation), the function stops with
+an informative error.
+
+The `pcoa_blocks` argument controls which trait sets are analyzed:
+
+- `"all"`: runs PCoA on each individual block in `base_cols` (typically `"veg"`, `"flo"`, `"fru"`), as well as on every pairwise and full combination of these blocks (`"vegflo"`, `"vegfru"`, `"flofru"`, `"vegflofru"`);
+- a character vector naming one or more blocks in `base_cols`: runs PCoA only on the requested block(s), individually.
+
+For each trait block, rows with missing values in the relevant columns are
+removed via `stats::na.omit()`, and traits with zero variance are dropped.
+Blocks with fewer than 3 specimens or fewer than 2 traits after this
+filtering, or with fewer than 2 ordination axes, are skipped with a
+warning.
+
+**Distance.** The distance between specimens is set by `dist_method`:
+
+- `"gower"` (default): Gower distance for continuous traits, i.e. the mean, over traits, of the absolute difference between two specimens divided by the range of the trait. All traits have the same weight regardless of their units;
+- `"euclidean"`: Euclidean distance on centred and scaled traits. The resulting PCoA is equivalent to the PCA computed by `morph_pca()`.
+
+**Ordination.** The PCoA is computed with `ape::pcoa()`. Distances
+such as Gower's are not always Euclidean, in which case some eigenvalues are
+negative. `correction` controls how this is handled: `"none"` (default)
+uses only the axes with positive eigenvalues; `"lingoes"` and `"cailliez"`
+apply the corresponding additive-constant corrections. The percentage of
+variation shown on each axis is its eigenvalue divided by the sum of the
+positive eigenvalues (corrected eigenvalues when a correction is used). When
+negative eigenvalues are present and `correction = "none"`, a message
+reports their magnitude.
+
+**Traits.** PCoA is computed from distances, so it has no trait
+loadings of its own. As in the usual PCoA biplot, each trait is instead
+correlated (`stats::cor()`) with the ordination axes: the vectors in the
+biplot are drawn for the `top_vars` traits with the highest squared
+correlation with PCo1 and PCo2 combined, with lengths proportional to the
+correlations; and the two barplots show the correlation of the `top_vars`
+traits most correlated with PCo1 and with PCo2, respectively.
+
+Taxon colours are taken from the `"taxon_colors"` attribute attached to
+`analysis_data` by `morph_matrix_setting()`, so that each taxon keeps the
+same colour used in other plots (e.g. `morph_pca()`, `morph_dapc()`). If
+this attribute is missing, or lacks an entry for a taxon present in a given
+block, colours are generated automatically from the `viridis` palette for
+the affected taxa, with a warning.
+
+For each analyzed block, the following figures are generated:
+
+- a PCoA biplot (specimens and trait vectors) with marginal density panels along each axis, one density per taxon;
+- a barplot of the correlation of the top traits with PCo1;
+- a barplot of the correlation of the top traits with PCo2;
+- a barplot of the percentage of variation explained by the first (up to 10) axes;
+- when at least 3 axes are available, a three-panel figure with PCo1 x PCo2, PCo1 x PCo3, and PCo2 x PCo3 scatterplots.
+
+Output files are written to a date-specific directory inside `Figs.PCoA`.
+Each figure is saved in the formats specified by `file_formats`. File
+names are prefixed by figure type (`"PCoA_"`, `"Dim1_corr_variables_"`,
+`"Dim2_corr_variables_"`, `"PCoA_eigenvalues_"`, `"PCoA_panels_"`) and
+suffixed by the trait block name.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| analysis_data | A numeric data frame containing morphological traits as columns and specimens as rows, with `id` and `taxon` columns and specimen identifiers as row names. Typically the `analysis_data` element returned by `morph_matrix_setting()`. If this object carries a `"taxon_colors"` attribute, those colours are reused; otherwise a `viridis` palette is generated automatically. |
+| pcoa_blocks | Character. Either `"all"`, to run PCoA on every individual block in `base_cols` plus all pairwise and full combinations of these blocks, or a character vector naming one or more blocks in `base_cols` to analyze individually. Default is `"all"`. |
+| dist_method | Character. Distance between specimens: `"gower"` (default) or `"euclidean"` (on scaled traits). See Details. |
+| correction | Character. Correction for negative eigenvalues: `"none"` (default), `"lingoes"` or `"cailliez"`. See Details. |
+| top_vars | Integer. Number of traits shown as vectors in the biplot and as bars in the trait-correlation plots for PCo1 and PCo2. Default is `10`. |
+| file_formats | Character vector specifying which image formats to save. One or more of `"pdf"` and `"jpeg"`. Default is `c("pdf", "jpeg")`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages, including skipped blocks, negative eigenvalues and the output directory, to the console. |
+
+### Value
+
+Invisibly returns a named list with one element per analyzed block. Each
+element is a list with:
+
+`scores`A data frame with the ordination coordinates of each
+specimen (`PCo1`, `PCo2`, ...) and its `taxon`, with specimen IDs as row
+names.
+`eigenvalues`A data frame with the `axis`, `eigenvalue` and
+`relative` (proportion of the sum of positive eigenvalues) of each axis.
+`n_specimens`, `n_traits`Number of specimens and traits used.
+
+The list is empty if no block could be analyzed.
+
+The function is primarily called for its side effects: PCoA biplots,
+trait-correlation plots, eigenvalue plots and (when applicable) pairwise
+axis scatterplot panels are written to disk for each analyzed trait block.
+
+### Examples
+
+```r
+# Build the morphometric matrix
+res <- morph_matrix_setting(
+  xlsx_path = "output_data/all_data.xlsx",
+  taxon_col = "taxon",
+  trait_name_type = "code",
+  veg_first = "petiole_length/PETIlng",
+  flo_first = "inflorescence_length/INFLlng",
+  fru_first = "fruit_stipe_length/FRSTlng"
+)
+
+# Run PCoA (Gower distance) on every individual block and every combination
+morph_pcoa(
+  analysis_data = res,
+  pcoa_blocks = "all"
+)
+
+# Vegetative block only, with a Lingoes correction for negative eigenvalues
+morph_pcoa(
+  analysis_data = res,
+  pcoa_blocks = "veg",
+  correction = "lingoes"
+)
+
+# Selected blocks, Euclidean distance on scaled traits, top 15 traits,
+# saving PDF output only
+pco <- morph_pcoa(
+  analysis_data = res,
+  pcoa_blocks = c("veg", "flo"),
+  dist_method = "euclidean",
+  top_vars = 15,
+  file_formats = "pdf"
+)
+
+# Ordination coordinates of the vegetative block
+head(pco$veg$scores)
+```
+
+

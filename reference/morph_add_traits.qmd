@@ -1,0 +1,150 @@
+---
+title: 'morph_add_traits'
+description: 'Add morphological trait columns to a specimen data frame'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::morph_add_traits()
+```
+
+### Description
+
+Creates a standardized morphological trait matrix for morphometric analyses.
+The function can either append morphological trait columns to an existing
+specimen-occurrence data frame or create an empty trait matrix when
+`base_df = NULL`.
+
+Trait columns can include a general set of qualitative and quantitative
+characters applicable across flowering plants, as well as additional
+taxon-specific characters selected from predefined morphological presets.
+Trait names may be returned as full descriptive names, abbreviated trait
+codes, or a combination of both.
+
+### Details
+
+`morph_add_traits()` is intended to prepare standardized data matrices for
+downstream morphometric analyses in **moRphoTaxa**. The function
+distinguishes between two major classes of morphological characters:
+
+- **Qualitative traits**, such as leaf shape, indumentum, floral morphology, fruit type, and seed morphology.
+- **Quantitative traits**, such as lengths, widths, areas, numbers, and other measurements of vegetative and reproductive structures.
+
+Default trait sets contain characters broadly applicable to flowering
+plants. Additional taxon-specific traits can be requested independently for
+qualitative and quantitative characters using `quali_specific` and
+`quanti_specific`. Taxon-specific presets contain only traits that are not
+already part of the default sets.
+
+Available taxon-specific presets are `"araceae"`, `"asteraceae"`,
+`"bryophyta"`, `"cactaceae"`, `"caesalpinioideae"`, `"lycopodiopsida"`,
+`"orchidaceae"`, `"papilionoideae"`, `"passifloraceae"`, `"pinophyta"`,
+`"poaceae"` and `"polypodiopsida"`.
+
+When an existing data frame is supplied through `base_df`, all original
+columns are retained and the selected morphological trait columns are added.
+Existing trait columns are preserved, whereas missing trait columns are
+initialized with `NA`.
+
+When `base_df = NULL`, the function returns an empty data frame containing
+only the selected morphological trait columns. This can be used as a
+template for manual morphological data entry.
+
+Trait columns are arranged according to a standardized sequence of plant
+structures, from vegetative to reproductive characters.
+
+If `save = TRUE`, the resulting data frame is additionally written to an
+Excel (`.xlsx`) file.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| base_df | A data frame containing specimen or occurrence records to which morphological trait columns will be added. If `NULL`, an empty data frame containing only the selected morphological trait columns is created. Default is `NULL`. |
+| trait_name | Character string specifying how morphological trait column names should be represented. One of: - `"trait full name"`: use descriptive trait names, such as `"leaf_length"`; - `"trait code"`: use abbreviated trait codes, such as `"LEAFlng"`; - `"both"`: combine the descriptive name and abbreviation, for example `"leaf_length/LEAFlng"`. If omitted, `"trait full name"` is used. |
+| quali_default | Logical. If `TRUE` (default), includes the default set of qualitative morphological traits broadly applicable to flowering plants. Set to `FALSE` to exclude these characters. Automatically treated as `FALSE` when `quali_specific` refers to a non-angiosperm group (currently `"bryophyta"`, `"lycopodiopsida"`, `"pinophyta"` or `"polypodiopsida"`), since these default traits (petal, sepal, fruit, seed, etc.) do not apply to those lineages. |
+| quanti_default | Logical. If `TRUE` (default), includes the default set of quantitative morphological traits broadly applicable to flowering plants. Set to `FALSE` to exclude these characters. Automatically treated as `FALSE` when `quanti_specific` refers to a non-angiosperm group (currently `"bryophyta"`, `"lycopodiopsida"`, `"pinophyta"` or `"polypodiopsida"`), since these default traits do not apply to those lineages. |
+| quali_specific | Character string specifying a taxon-specific preset of qualitative morphological traits to add (case-insensitive). See *Details* for the available presets. If `NULL` (default), no taxon-specific qualitative traits are added. |
+| quanti_specific | Character string specifying a taxon-specific preset of quantitative morphological traits to add (case-insensitive). See *Details* for the available presets. If `NULL` (default), no taxon-specific quantitative traits are added. |
+| save | Logical. If `TRUE` (default), writes the resulting morphological data matrix to an Excel (`.xlsx`) file. If `FALSE`, the data frame is returned without writing a file. |
+| file_name | Character string specifying the file path (including file name and `.xlsx` extension) used to save the resulting data frame when `save = TRUE`. If `NULL` (default), a file is automatically saved inside an output_data/ folder (created if it does not already exist), with a file name generated from the current date and time. Ignored if `save = FALSE`. |
+| verbose | Logical. If `TRUE` (default), displays informative messages during execution, including the location of exported files. |
+
+### Value
+
+A data frame containing the original columns of `base_df`, when supplied,
+together with the selected morphological trait columns. Missing trait
+values are initialized as `NA`. If `base_df = NULL`, an empty data frame
+containing only the selected trait columns is returned.
+
+If `save = TRUE`, the same data frame is also written to an Excel file.
+
+### Examples
+
+```r
+# Add default qualitative and quantitative traits
+traits <- morph_add_traits(
+  base_df = specimen_data,
+  trait_name = "trait full name",
+  save = FALSE
+)
+
+# Add Passifloraceae-specific qualitative and quantitative traits
+traits_passifloraceae <- morph_add_traits(
+  base_df = specimen_data,
+  trait_name = "both",
+  quali_specific = "passifloraceae",
+  quanti_specific = "passifloraceae",
+  save = FALSE
+)
+
+# Add Poaceae-specific traits on top of the default traits
+traits_poaceae <- morph_add_traits(
+  base_df = specimen_data,
+  trait_name = "both",
+  quali_specific = "poaceae",
+  quanti_specific = "poaceae",
+  save = FALSE
+)
+
+# Add Araceae-specific traits on top of the default traits
+traits_araceae <- morph_add_traits(
+  base_df = specimen_data,
+  trait_name = "both",
+  quali_specific = "araceae",
+  quanti_specific = "araceae",
+  save = FALSE
+)
+
+# Add conifer-specific traits (angiosperm defaults are excluded automatically)
+traits_pinophyta <- morph_add_traits(
+  base_df = specimen_data,
+  trait_name = "both",
+  quali_specific = "pinophyta",
+  quanti_specific = "pinophyta",
+  save = FALSE
+)
+
+# Add lycophyte-specific traits (angiosperm defaults are excluded automatically)
+traits_lycopodiopsida <- morph_add_traits(
+  base_df = specimen_data,
+  trait_name = "both",
+  quali_specific = "lycopodiopsida",
+  quanti_specific = "lycopodiopsida",
+  save = FALSE
+)
+
+# Create an empty template containing only morphological traits
+trait_template <- morph_add_traits(
+  base_df = NULL,
+  trait_name = "trait code",
+  quali_default = TRUE,
+  quanti_default = TRUE,
+  save = FALSE
+)
+```
+
+

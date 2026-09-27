@@ -1,0 +1,159 @@
+---
+title: 'morph_autocorrelation'
+description: 'Lag-1 autocorrelation of morphological traits along a geographic gradient'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::morph_autocorrelation()
+```
+
+### Description
+
+Measures, for each morphological trait, how similar the values of
+neighbouring specimens are when specimens are ordered along a
+geographic axis (latitude or longitude) or kept in their original
+spreadsheet order. A positive lag-1 autocorrelation indicates that
+specimens close to each other in the ordering tend to have similar
+values (a gradient or geographic structure in the trait), a value near
+zero indicates no ordering-related structure, and a negative value
+indicates that neighbouring specimens tend to alternate.
+
+Takes the morphometric matrix produced by `morph_matrix_setting()` and,
+when specimens are ordered by geography, the geographical matrix
+produced by `geo_matrix_setting()`. For each requested trait block, the
+function computes the autocorrelation of every trait, draws a ranked
+bar chart, and writes a combined summary table.
+
+### Details
+
+**Ordering specimens.**
+Specimens are matched by row names (the specimen identifiers shared by
+`morph_matrix_setting()` and `geo_matrix_setting()`) and sorted once,
+before any block is analyzed:
+
+- `"latitude"` (default): ascending `decimalLatitude`;
+- `"longitude"`: ascending `decimalLongitude`;
+- `"none"`: the row order of `analysis_data` is kept (the spreadsheet order, e.g. collection number). `geodata` is not needed in this case.
+
+When ordering by latitude or longitude, specimens of `analysis_data`
+that are absent from `geodata` (or have a missing coordinate) are
+dropped. Specimens with identical coordinates keep their relative
+spreadsheet order.
+
+**Lag-1 autocorrelation.**
+For each trait, the specimens are taken in the chosen order and the
+trait value of each specimen is correlated with the value of the
+preceding specimen, using the coefficient given by `cor_method`.
+A pair of consecutive specimens is used only if both have a measured
+value for that trait; the autocorrelation is `NA`, and the trait is
+left out of the results, when fewer than 3 such pairs exist or when
+the trait is constant among them. The coefficient is descriptive: no
+significance test is performed. It only detects structure along the
+chosen ordering axis.
+
+**Pooled taxa.**
+All specimens in `analysis_data` are ordered together. If several
+taxa are included and they occupy different parts of the ordering axis,
+differences between taxa contribute to the autocorrelation. To examine
+geographic structure within a single taxon, build `analysis_data`
+with `species_selected` set to that taxon in
+`morph_matrix_setting()`.
+
+**Trait blocks.**
+The vegetative (`"veg"`), floral (`"flo"`), and fruit
+(`"fru"`) trait blocks are read from the `"base_cols"`
+attribute of `analysis_data`, created by `morph_matrix_setting()`.
+With `blocks = "all"`, each available block is run, followed by
+every combination of two or more available blocks, named by
+concatenating the block names (`"vegflo"`, `"vegfru"`,
+`"flofru"`, `"vegflofru"`). Any single block or combination
+can also be requested by name. Because the autocorrelation is computed
+trait by trait, a trait has the same value in every block that contains
+it; combined blocks only group traits in a single chart and table.
+
+**Outputs.**
+One chart per block (`Autocorrelation_<block>.<ext>`) and a single
+`Autocorrelation_summary.csv` with all blocks are written to a
+dated subfolder (`format(Sys.time(), "%d%b%Y")`) inside
+`"Figs_Autocorrelation"`. The dated subfolder means repeated runs
+do not overwrite each other. Trait labels in the charts and the summary
+are the descriptive part of the column name, with underscores replaced
+by spaces (`"petiole_length/PETIlng"` becomes
+`"petiole length"`); columns already renamed to codes are shown as
+they are.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| analysis_data | A data frame produced by `morph_matrix_setting()`, with specimen identifiers as row names and the `"base_cols"` attribute. Do not strip attributes (e.g. by subsetting or rebuilding the data frame) before calling this function. |
+| geodata | A data frame produced by `geo_matrix_setting()`, with specimen identifiers as row names and the `decimalLatitude` and `decimalLongitude` columns. Required when `order_by` is `"latitude"` or `"longitude"`; ignored when `order_by = "none"`. Default is `NULL`. |
+| blocks | Character vector of blocks to analyze. `"all"` (default) runs every available block and every combination of blocks. Otherwise, one or more of `"veg"`, `"flo"`, `"fru"`, `"vegflo"`, `"vegfru"`, `"flofru"`, and `"vegflofru"`, restricted to the blocks available in `analysis_data`. Unavailable names are ignored with a warning. |
+| cor_method | Character string giving the correlation coefficient used for the lag-1 autocorrelation. One of `"pearson"` (default), `"spearman"`, or `"kendall"`. Passed to `stats::cor()`. |
+| order_by | Character string giving how specimens are ordered before computing the autocorrelation. One of `"latitude"` (default), `"longitude"`, or `"none"` (keep the row order of `analysis_data`). |
+| file_formats | Character vector specifying the file formats used to save the charts. One or more of `"pdf"` and `"jpg"`. Default is `c("pdf", "jpg")`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages and, for each block, the number of traits computed and the traits with the highest and lowest autocorrelation. |
+
+### Value
+
+A list, returned invisibly, with the elements:
+
+`results`A data frame with one row per trait and block,
+with columns `block`, `trait`, and `autocor`, or
+`NULL` if no block produced results.
+`plots`A named list of `ggplot2::ggplot()` objects, one per
+block.
+`specimen_order`Character vector of specimen identifiers in
+the order used.
+`output_dir`Path of the folder where the charts and the
+summary table were saved.
+
+The function is also called for its side effects: charts and the summary
+table are written to `output_dir`.
+
+### Examples
+
+```r
+# Both matrices must be built from the same specimens
+geo <- geo_matrix_setting(
+  xlsx_path = "specimen_data.xlsx",
+  taxon_col = "species",
+  edaphic = FALSE
+)
+
+morph <- morph_matrix_setting(
+  xlsx_path = "specimen_data.xlsx",
+  taxon_col = "species",
+  trait_name_type = "code",
+  veg_first = "petiole_length/PETIlng",
+  flo_first = "inflorescence_length/INFLlng",
+  fru_first = "fruit_stipe_length/FRSTlng"
+)
+
+# Every block and block combination, specimens ordered by latitude
+res <- morph_autocorrelation(analysis_data = morph, geodata = geo)
+head(res$results)
+
+# Floral traits only, ordered by longitude, Spearman correlation
+res <- morph_autocorrelation(
+  analysis_data = morph,
+  geodata = geo,
+  blocks = "flo",
+  cor_method = "spearman",
+  order_by = "longitude"
+)
+
+# Keep the original spreadsheet order (geodata not needed)
+res <- morph_autocorrelation(
+  analysis_data = morph,
+  blocks = c("veg", "fru"),
+  order_by = "none",
+  file_formats = "pdf"
+)
+```
+
+

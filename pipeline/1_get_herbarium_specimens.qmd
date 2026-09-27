@@ -1,0 +1,281 @@
+---
+title: "Get Herbarium Data"
+format:
+  html:
+    toc: true
+execute:
+  cache: true
+  freeze: auto
+---
+
+## What this script does
+
+Download herbarium specimen records from four biodiversity databases:
+
+- speciesLink  
+- REFLORA  
+- JABOT  
+- GBIF  
+
+The records are merged into a single dataset and exported as an **Excel file**.
+
+
+## Setup
+
+Load the R packages required to access biodiversity databases.
+
+```{r eval = FALSE}
+
+#install.packages("devtools")
+
+# refloraR: https://dboslab.github.io/refloraR-website/
+#devtools::install_github("DBOSlab/refloraR")
+library(refloraR)
+
+# jabotR: https://dboslab.github.io/jabotR-website/
+#devtools::install_github("DBOSlab/jabotR")
+library(jabotR)
+
+# rspeciesLink: https://github.com/LimaRAF/plantR
+# rgbif2: https://github.com/LimaRAF/plantR
+#devtools::install_github("LimaRAF/plantR")
+library(plantR)
+```
+
+Load general packages to operate data frames and export to **Excel**.
+
+```{r eval = FALSE}
+
+#install.packages(dplyr)
+library(dplyr)
+
+#install.packages(openxlsx)
+library(openxlsx)
+```
+
+Load auxiliary functions for the script.
+
+```{r eval = FALSE}
+
+source("functions/auxiliary_functions.R")
+```
+
+Create folders in the directory to save the occurrence data.
+
+```{r eval = FALSE}
+
+if (!dir.exists("input_data/")) dir.create("input_data/", recursive = TRUE)
+if (!dir.exists("output_data/")) dir.create("output_data/", recursive = TRUE)
+
+timestamp_tag <- format(Sys.time(), "%d%b%Y")
+all_data_path   <- file.path("output_data/", paste0("all_data_",  timestamp_tag, ".xlsx"))
+```
+
+Define the species names used to query the databases.
+
+```{r eval = FALSE}
+#Example:
+
+targeted_taxa <- c(
+  "Ormosia coarctata",
+  "Ormosia stipularis",
+  "Ormosia fastigiata"
+)
+```
+
+
+## speciesLink
+
+Download records from *speciesLink*.
+This function requires a personal API key to download the data. You can generate one at:
+
+*https://specieslink.net/aut/profile/apikeys*
+
+```{r eval = FALSE}
+#Example:
+
+personal_key <- "DBpBRprOuNV8ZWoxRFcr"
+```
+
+To query multiple species, the function downloads a separate dataset for each species in the list.
+
+```{r eval = FALSE}
+data_speciesLink <- lapply(
+  targeted_taxa,
+  function(x) plantR::rspeciesLink(
+    dir = "input_data/",
+    filename = "spLink_records_search",
+    save = TRUE,
+    key = personal_key,
+    basisOfRecord = NULL,
+    family = NULL,
+    species = x,
+    collectionCode = NULL,
+    country = NULL,
+    stateProvince = NULL,
+    county = NULL,
+    Coordinates = NULL,
+    CoordinatesQuality = NULL,
+    Scope = NULL,
+    Synonyms = "no synomyms",
+    Typus = FALSE,
+    Images = FALSE,
+    RedList = NULL,
+    MaxRecords = 5000,
+    file.format = "csv",
+    compress = FALSE
+  )
+)
+```
+
+Next, the resulting data frames are combined into a single dataset.
+
+```{r eval = FALSE}
+
+# Adding species names to each element of the list
+names(data_speciesLink) <- targeted_taxa
+
+# Binding all searchs and keeping a column with the named used in the search
+data_speciesLink <- dplyr::bind_rows(data_speciesLink, .id = "original_search")
+```
+
+Finally, an auxiliary function standardizes the column names to conform to Darwin Core terminology.
+
+```{r eval = FALSE}
+
+data_speciesLink <- fix_column_names(data_speciesLink)
+```
+
+## REFLORA
+
+Download specimen records from the *REFLORA Virtual Herbarium*.
+
+```{r eval = FALSE}
+data_reflora <- refloraR::reflora_records(
+  herbarium = NULL,
+  repatriated = TRUE,
+  taxon = targeted_taxa,
+  state = NULL,
+  recordYear = NULL,
+  indets = TRUE,
+  reorder = c("herbarium", "taxa", "collector", "area", "year"),
+  path = NULL,
+  updates = TRUE,
+  verbose = TRUE,
+  save = FALSE,
+  dir = "input_data/",
+  filename = "reflora_records_search"
+)
+```
+
+The *REFLORA* package temporarily stores individual downloaded records in a local directory. Since the records are already loaded into the `data_reflora` data frame, the temporary folder is removed to keep the workspace clean.
+
+```{r eval = FALSE}
+
+unlink("reflora_download/", recursive = TRUE, force = TRUE)
+```
+
+## JABOT
+
+Download specimen records from the *JABOT* database of the *Rio de Janeiro Botanical Garden*.
+
+```{r eval = FALSE}
+data_jabot <- jabotR::jabot_records(
+  herbarium = NULL,
+  taxon = targeted_taxa,
+  state = NULL,
+  recordYear = NULL,
+  indets = TRUE,
+  reorder = c("herbarium", "taxa", "collector", "area", "year"),
+  path = NULL,
+  updates = TRUE,
+  verbose = TRUE,
+  save = FALSE,
+  dir = "input_data/",
+  filename = "jabot_records_search"
+)
+```
+
+As in the *REFLORA* step, the temporary download directory is removed because the records are already stored in the `data_jabot` data frame.
+
+```{r eval = FALSE}
+
+unlink("jabot_download/", recursive = TRUE, force = TRUE)
+```
+
+
+## GBIF
+
+Download occurrence records from the *Global Biodiversity Information Facility (GBIF)*.
+As in the *speciesLink* query, the function downloads a separate dataset for each species in the list in a multi species search.
+
+```{r eval = FALSE}
+data_gbif <- lapply(
+  targeted_taxa,
+  function(x) plantR::rgbif2(
+    dir = "input_data/",
+    filename = "gbif_records_search",
+    species = x,
+    n.records = 5000,
+    force = TRUE,
+    remove_na = FALSE,
+    save = FALSE,
+    file.format = "csv",
+    compress = FALSE
+  )
+)
+```
+
+The resulting data frames are then combined into a single dataset.
+
+```{r eval = FALSE}
+
+# Adding species names to each element of the list
+names(data_gbif) <- targeted_taxa
+
+# Binding all searchs and keeping a column with the named used in the search
+data_gbif <- dplyr::bind_rows(data_gbif, .id = "original_search")
+```
+
+
+## Merge all sources
+
+First, add a column identifying the origin of each record.
+
+```{r eval = FALSE}
+data_gbif$source <- "GBIF"
+data_jabot$source <- "JABOT"
+data_reflora$source <- "REFLORA"
+data_speciesLink$source <- "speciesLink"
+```
+
+Then convert all fields to character before merging.
+
+```{r eval = FALSE}
+
+data_list <- list(data_gbif, data_jabot, data_reflora, data_speciesLink)
+
+data_list <- lapply(data_list, function(df) {
+  df %>% dplyr::mutate(across(everything(), as.character))
+})
+```
+
+Combine the sources.
+
+```{r eval = FALSE}
+
+all_data <- dplyr::bind_rows(data_list)
+```
+
+# Export dataset
+
+Export the merged dataset to Excel.
+
+```{r eval = FALSE}
+
+openxlsx::write.xlsx(all_data, file = all_data_path)
+all_data_path
+```
+
+
+

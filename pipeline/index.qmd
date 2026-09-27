@@ -1,0 +1,39 @@
+---
+title: "Pipeline"
+---
+
+These "how-to" articles walk through `moRphoTaxa`'s full pipeline. The diagram below gives the overall shape of that workflow before you dive into the individual guides, each of which includes the original R script.
+
+::: {.workflow-figure}
+![](/figures/moRphoTaxa_workflow.svg){fig-alt="moRphoTaxa workflow diagram: herbarium data retrieval, occurrence cleaning, construction of the morphometric and ecogeographic matrices, and morphometric and ecogeographic inference"}
+:::
+
+::: {.pipeline-steps}
+::: {.pipeline-step}
+### 1. Get herbarium data
+Retrieve specimen records from REFLORA, JABOT, speciesLink and GBIF.
+
+[Get herbarium data →](/pipeline/1_get_herbarium_specimens.qmd)
+:::
+
+::: {.pipeline-step}
+### 2. Clean occurrence data
+Merge sources, remove duplicates and standardize names.
+
+[Clean occurrence data →](/pipeline/2_clean_data.qmd)
+:::
+
+::: {.pipeline-step}
+### 3. Add morphological traits
+Build the trait template and the morphometric matrix.
+
+[Add morphological traits →](/pipeline/3_add_morphological_traits.qmd)
+:::
+
+::: {.pipeline-step}
+### 4. Run analysis
+Morphometric, ecogeographic and niche analyses.
+
+[Run analysis →](/pipeline/4_analysis.qmd)
+:::
+:::

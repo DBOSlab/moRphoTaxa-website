@@ -1,0 +1,527 @@
+---
+title: "Run analysis"
+format:
+  html:
+    toc: true
+execute:
+  cache: true
+  freeze: auto
+---
+
+## What this script does
+
+Runs the full downstream analysis on a curated morphological + occurrence dataset using the `moRphoTaxa` package: builds the morphometric and ecogeographic matrices, checks data quality, explores structure through ordination and clustering, tests group differences with confirmatory statistics, and closes with an environmental/niche analysis based on WorldClim and SoilGrids variables.
+
+Most analysis functions share a small set of conventions:
+
+-   A `*_blocks` argument selects which trait block(s) to analyze — `"veg"` (vegetative), `"flo"` (floral), `"fru"` (fruit), or `"all"`. Blocks are defined by the `veg_first`/`flo_first`/`fru_first` boundaries set in `morph_matrix_setting()`.
+-   `file_formats` controls which image format(s) each function saves its plots in (e.g. `"jpeg"`, `"pdf"`, or `c("pdf", "jpeg")`).
+-   `verbose` controls whether the function prints progress/status messages, including the location of saved files.
+-   `save_xlsx` (where available) controls whether numeric results are additionally exported to an Excel workbook alongside the plots.
+
+## Setup
+
+```{r eval = FALSE}
+
+# moRphoTaxa: https://dboslab.github.io/moRphoTaxa-website/
+#devtools::install_github("DBOSlab/moRphoTaxa")
+library(moRphoTaxa)
+```
+
+### morph_matrix_setting()
+
+Reads the curated dataset (an Excel file with one row per specimen/occurrence and one taxon column) and builds the standardized morphometric matrix used by every `morph_*()` function downstream. It also stores the vegetative/floral/fruit block boundaries as attributes so subsequent functions know which columns belong to which block.
+
+```{r eval = FALSE}
+
+morphmatrix <- morph_matrix_setting(xlsx_path = "output_data/all_data.xlsx",
+                                    taxon_col = "taxon",
+                                    species_selected = NULL,
+                                    trait_name_type = "code",
+                                    veg_first = "petiole_length/PETIlng",
+                                    flo_first = "inflorescence_length/INFLlng",
+                                    fru_first = "fruit_stipe_length/FRSTlng",
+                                    colors = NULL)
+```
+
+-   **`xlsx_path`** — path to the source Excel file.
+-   **`taxon_col`** — name of the column identifying taxa/groups.
+-   **`species_selected`** — optional character vector to restrict the matrix to specific taxa; `NULL` keeps all of them.
+-   **`trait_name_type`** — whether trait columns in the source file are labeled by `"code"`, full name, or both (must match how the file was produced, e.g. by `morph_add_traits()`).
+-   **`veg_first`, `flo_first`, `fru_first`** — the first column of each block (vegetative, floral, fruit), used to split the trait matrix into the `"veg"`/`"flo"`/`"fru"` blocks referenced everywhere else in the pipeline.
+-   **`colors`** — optional named vector assigning a color to each taxon; if `NULL`, colors are generated automatically and stored as a `taxon_colors` attribute reused by every plotting function below.
+
+## Data quality & exploration
+
+### morph_normality()
+
+Tests each quantitative trait for normality (per block) and optionally produces Q-Q plots.
+
+```{r eval = FALSE}
+
+morph_normality(analysis_data = morphmatrix,
+                norm_alpha = 0.05,
+                norm_qq = TRUE,
+                file_formats = "jpeg",
+                verbose = TRUE)
+```
+
+-   **`norm_alpha`** — significance threshold for the normality test.
+-   **`norm_qq`** — whether to also produce Q-Q plots for each trait.
+
+### morph_boxplots()
+
+Draws boxplots (or violin plots) of each trait by taxon, for visual comparison across groups.
+
+```{r eval = FALSE}
+
+morph_boxplots(analysis_data = morphmatrix,
+               plot_type = "violin",
+               show_jitter = TRUE,
+               min_n_total = 10,
+               file_formats = "jpeg",
+               verbose = TRUE)
+```
+
+-   **`plot_type`** — `"boxplot"` or `"violin"`.
+-   **`show_jitter`** — overlay individual data points as jitter.
+-   **`min_n_total`** — minimum total sample size for a trait to be plotted.
+
+### morph_similarity()
+
+Computes pairwise trait-to-trait correlations within each block and flags significant associations after multiple-testing correction.
+
+```{r eval = FALSE}
+
+morph_similarity(analysis_data = morphmatrix,
+                 sim_blocks = "all",
+                 sim_method = "pearson",
+                 sim_p_adjust = "BH",
+                 sim_alpha = 0.05,
+                 sim_min_n = 5,
+                 sim_pairs = NULL
+                 file_formats = "jpeg")
+```
+
+-   **`sim_method`** — correlation method (e.g. `"pearson"`, `"spearman"`).
+-   **`sim_p_adjust`** — p-value adjustment method (`"BH"` = Benjamini–Hochberg).
+-   **`sim_min_n`** — minimum pairwise sample size for a trait pair to be included.
+-   **`sim_pairs`** — list of character vectors of length two to produce an scatter plot
+
+
+## Ordination
+
+### morph_pca()
+
+Principal Component Analysis of the (quantitative) traits in each block, highlighting the top-contributing traits per axis.
+
+```{r eval = FALSE}
+
+morph_pca(analysis_data = morphmatrix,
+          pca_blocks = "all",
+          top_contrib = 10,
+          file_formats = "jpeg",
+          verbose = TRUE)
+```
+
+-   **`top_contrib`** — number of top-contributing traits reported/highlighted per component.
+
+### morph_pcoa()
+
+Principal Coordinates Analysis on a dissimilarity matrix (default Gower, which handles mixed qualitative/quantitative traits), with an eigenvalue-correction method for negative eigenvalues.
+
+```{r eval = FALSE}
+
+morph_pcoa(analysis_data = morphmatrix,
+           pcoa_blocks = "all",
+           dist_method = "gower",
+           correction = "lingoes",
+           top_vars = 10,
+           file_formats = "jpeg",
+           verbose = TRUE)
+```
+
+-   **`dist_method`** — dissimilarity metric (e.g. `"gower"`, `"bray"`).
+-   **`correction`** — negative-eigenvalue correction (e.g. `"lingoes"`, `"cailliez"`).
+-   **`top_vars`** — number of top-contributing variables reported.
+
+### morph_nmds()
+
+Non-metric multidimensional scaling, an alternative rank-based ordination.
+
+```{r eval = FALSE}
+
+morph_nmds(analysis_data = morphmatrix,
+           nmds_blocks = "all",
+           nmds_dist = "gower",
+           nmds_k = 2,
+           nmds_trymax = 100,
+           nmds_seed = 42,
+           file_formats = "jpeg",
+           verbose = TRUE)
+```
+
+-   **`nmds_dist`** — distance method.
+-   **`nmds_k`** — number of NMDS dimensions.
+-   **`nmds_trymax`** — maximum number of random starts to find a stable solution.
+-   **`nmds_seed`** — random seed, for reproducibility.
+
+## Clustering
+
+### morph_dendrogram()
+
+Hierarchical clustering (agglomerative), with a candidate linkage method and a search over the number of clusters up to `k_max`.
+
+```{r eval = FALSE}
+
+morph_dendrogram(analysis_data = morphmatrix,
+                 dendro_blocks = "all",
+                 dist_method = "bray",
+                 linkage_candidates = "complete",
+                 k_max = 8,
+                 cluster_cols = NULL,
+                 file_formats = c("pdf", "jpeg"),
+                 verbose = TRUE)
+```
+
+-   **`linkage_candidates`** — linkage method(s) to evaluate (e.g. `"complete"`, `"average"`, `"ward.D2"`).
+-   **`k_max`** — upper bound on the number of clusters considered when cutting the tree.
+-   **`cluster_cols`** — vector of colors used for dendrogram branches
+
+### morph_kmeans()
+
+K-means partitioning, with a bootstrap procedure (`kmeans_B`) to help choose the number of clusters, visualized on the PCA axes produced by `morph_pca()`.
+
+```{r eval = FALSE}
+
+morph_kmeans(analysis_data = morphmatrix,
+             kmeans_blocks = "all",
+             kmeans_k_max = 10,
+             kmeans_B = 50,
+             kmeans_nstart = 25,
+             kmeans_pcs = c("PC1", "PC2"),
+             kmeans_seed = 123,
+             file_formats = "jpeg",
+             verbose = TRUE)
+```
+
+-   **`kmeans_k_max`** — maximum number of clusters evaluated.
+-   **`kmeans_B`** — number of bootstrap replicates used to assess cluster stability.
+-   **`kmeans_nstart`** — number of random starts per k-means run (best solution kept).
+-   **`kmeans_pcs`** — which PCA axes to plot the resulting clusters on.
+
+### morph_nmm()
+
+Normal mixture-model clustering (via `mclust`), selecting the top contributing traits and drawing confidence ellipses per component.
+
+```{r eval = FALSE}
+
+morph_nmm(analysis_data = morphmatrix,
+          nmm_blocks = "all",
+          nmm_top_traits = 10,
+          nmm_min_n = 10,
+          ellipse_level = 0.4,
+          nmm_seed = 123,
+          save_xlsx = TRUE,
+          file_formats = "jpeg",
+          verbose = TRUE)
+```
+
+-   **`nmm_top_traits`** — number of traits used to fit/display the mixture model.
+-   **`nmm_min_n`** — minimum sample size required to fit the model.
+-   **`ellipse_level`** — confidence level of the plotted ellipses.
+
+## Confirmatory
+
+### morph_anova()
+
+One-way ANOVA of each quantitative trait by group, with multiple-testing correction.
+
+```{r eval = FALSE}
+
+morph_anova(analysis_data = morphmatrix,
+            anova_blocks = "all",
+            anova_groups = "taxon",
+            anova_p_adjust = "BH",
+            anova_alpha = 0.05,
+            save_xlsx = TRUE,
+            file_formats = "jpeg",
+            verbose = TRUE)
+```
+
+-   **`anova_groups`** — grouping column used to test differences (typically `taxon_col`).
+
+### morph_permanova()
+
+Permutational MANOVA on a dissimilarity matrix (default Gower), testing whether groups differ multivariately, with confidence ellipses on the ordination plot.
+
+```{r eval = FALSE}
+
+morph_permanova(analysis_data = morphmatrix,
+                permanova_blocks = "all",
+                dist_method = "gower",
+                permutations = 999,
+                min_n = 3,
+                p_adjust = "BH",
+                ellipse_level = 0.95,
+                seed = 123,
+                save_xlsx = TRUE,
+                file_formats = "jpeg",
+                verbose = TRUE)
+```
+
+-   **`permutations`** — number of permutations used to build the null distribution.
+-   **`min_n`** — minimum group size to be included in the test.
+
+### morph_kruskal()
+
+Non-parametric alternative to `morph_anova()`: Kruskal–Wallis test per trait, with optional Dunn's post-hoc pairwise comparisons.
+
+```{r eval = FALSE}
+
+morph_kruskal(analysis_data = morphmatrix,
+              kw_blocks = "all",
+              kw_groups = "taxon",
+              kw_p_adjust = "BH",
+              kw_alpha = 0.05,
+              kw_posthoc = TRUE,
+              save_xlsx = TRUE,
+              file_formats = "jpeg",
+              verbose = TRUE)
+```
+
+-   **`kw_posthoc`** — whether to run Dunn's post-hoc test when the omnibus test is significant.
+
+### morph_lda()
+
+Linear Discriminant Analysis (`MASS::lda`), plotted on the requested discriminant axes with confidence ellipses; missing values can be imputed before fitting.
+
+```{r eval = FALSE}
+
+morph_lda(analysis_data = morphmatrix,
+          lda_blocks = "all",
+          lda_group = "taxon",
+          lda_lds = c("LD1", "LD2"),
+          lda_ellipse = 0.95,
+          lda_min_n = 3,
+          lda_impute = "mean",
+          save_xlsx = TRUE,
+          file_formats = "jpeg",
+          verbose = TRUE)
+```
+
+-   **`lda_lds`** — which discriminant axes to plot.
+-   **`lda_impute`** — imputation strategy for missing trait values (e.g. `"mean"`, or `"none"`/`NULL` to drop incomplete cases, depending on the implementation).
+
+### morph_cva()
+
+Canonical Variate Analysis, a group-mean-based alternative/complement to LDA for exploring shape/trait divergence among taxa.
+
+```{r eval = FALSE}
+
+morph_cva(analysis_data = morphmatrix,
+          cva_blocks = "all",
+          cva_ellipse = 0.95,
+          cva_min_n = 3,
+          file_formats = c("pdf", "jpeg"),
+          verbose = TRUE)
+```
+
+-   **`cva_ellipse`** — confidence level of the plotted group ellipses.
+-   **`cva_min_n`** — minimum group size to be included.
+
+### morph_dapc()
+
+Discriminant Analysis of Principal Components — combines a PCA dimensionality-reduction step with LDA, useful when traits are highly correlated or numerous relative to sample size.
+
+```{r eval = FALSE}
+
+morph_dapc(analysis_data = morphmatrix,
+           dapc_blocks = "all",
+           dapc_min_n = 3,
+           dapc_ellipse = 0.95,
+           file_formats = "jpeg",
+           verbose = TRUE)
+```
+
+-   **`dapc_min_n`** — minimum group size to be included.
+
+## Environmental & niche analysis
+
+### geo_matrix_setting()
+
+Builds the ecogeographic counterpart of `morph_matrix_setting()`: pulls WorldClim bioclimatic variables for each occurrence record (always) and, optionally, SoilGrids edaphic variables, returning a matrix analogous in structure to the morphometric one.
+
+```{r eval = FALSE}
+
+geomatrix <- geo_matrix_setting(xlsx_path = "output_data/all_data.xlsx",
+                                sheet = 1,
+                                taxon_col = "taxon",
+                                species_selected = NULL,
+                                wc_res = 2.5,
+                                edaphic = TRUE,
+                                edaphic_vars = c("clay", "sand", "silt", "soc",
+                                                 "phh2o", "cec", "nitrogen",
+                                                 "bdod", "cfvo", "ocd", "ocs"),
+                                edaphic_depth = 5,
+                                data_path = "variables_data/",
+                                verbose = TRUE)
+```
+
+-   **`sheet`** — sheet of `xlsx_path` to read, when the file has more than one.
+-   **`wc_res`** — WorldClim spatial resolution, in arc-minutes (e.g. `2.5`).
+-   **`edaphic`** — whether to also fetch SoilGrids edaphic variables; when `FALSE`, only climate variables are used.
+-   **`edaphic_vars`** — which SoilGrids variables to fetch (clay/sand/silt fractions, organic carbon, pH, CEC, nitrogen, bulk density, coarse fragments, organic carbon density/stock).
+-   **`edaphic_depth`** — soil depth (cm) at which the edaphic variables are sampled.
+-   **`data_path`** — folder where the downloaded/cached raster layers are stored.
+
+### geo_bioclim_exploratory()
+
+Ranks the 19 bioclimatic variables by variance and pairwise correlation, and summarizes them with a PCA, exporting the ranking to Excel.
+
+```{r eval = FALSE}
+
+geo_bioclim_exploratory(geodata = geomatrix,
+                        bio_x = 15,
+                        bio_y = 12,
+                        cor_threshold = 0.8,
+                        file_formats = "jpg",
+                        verbose = TRUE)
+```
+
+-   **`bio_x`, `bio_y`** — which two bioclimatic variables (by BIO code number) to use for the pairwise scatter/dispersion plot.
+-   **`cor_threshold`** — correlation cutoff above which a variable pair is flagged as redundant.
+
+### geo_bioclim_maps()
+
+Maps a chosen bioclimatic layer across the study area, together with occurrence points, with optional country/state borders and rivers.
+
+```{r eval = FALSE}
+
+geo_bioclim_maps(geodata = geomatrix,
+                 bio_map_layer = 12,
+                 bio_x = 1,
+                 bio_y = 12,
+                 show_country_states = NULL,
+                 show_rivers = FALSE,
+                 river_scale = 10,
+                 inset = TRUE,
+                 pt_shapes = NULL,
+                 save = TRUE,
+                 file_formats = "jpg",
+                 verbose = TRUE)
+```
+
+-   **`bio_map_layer`** — bioclimatic variable plotted as the background raster.
+-   **`show_country_states`** — optional vector of country/state names to outline.
+-   **`inset`** — whether to add a locator inset map.
+-   **`pt_shapes`** — optional per-taxon point shapes for the occurrence markers.
+
+### geo_morph_mantel()
+
+Mantel test comparing geographic distance to morphological (trait) distance, to check for isolation-by-distance-like patterns.
+
+```{r eval = FALSE}
+
+geo_morph_mantel(geodata = geomatrix,
+                 analysis_data = morphmatrix,
+                 cor_method = "pearson",
+                 permutations = 999,
+                 dist_method = "gower",
+                 geo_dist_method = "euclidean",
+                 file_formats = "jpg",
+                 verbose = TRUE)
+```
+
+-   **`dist_method`** — dissimilarity metric for the morphological distance matrix.
+-   **`geo_dist_method`** — distance metric for geographic coordinates.
+
+### morph_autocorrelation()
+
+Tests each trait for lag-1 spatial autocorrelation along an ordering of the specimens (by latitude, longitude, or original row order), producing per-block plots and a summary table.
+
+```{r eval = FALSE}
+
+morph_autocorrelation(analysis_data = morphmatrix,
+                      geodata = geomatrix,
+                      blocks = "all",
+                      cor_method = "pearson",
+                      order_by = "latitude",
+                      file_formats = "jpg",
+                      verbose = TRUE)
+```
+
+-   **`order_by`** — how specimens are ordered before computing the lag-1 autocorrelation: `"latitude"`, `"longitude"`, or `"none"` (keeps original row order).
+
+### geo_morph_rda()
+
+Redundancy Analysis constraining morphological traits by bioclimatic variables, run per trait block, after dropping redundant environmental variables above a correlation threshold.
+
+```{r eval = FALSE}
+
+geo_morph_rda(analysis_data = morphmatrix,
+              geodata = geomatrix,
+              blocks = "all",
+              env_vars = NULL,
+              permutations = 999,
+              scale_data = TRUE,
+              env_cor_threshold = 0.95,
+              file_formats = "jpg",
+              verbose = TRUE)
+```
+
+-   **`env_vars`** — environmental variables to use as constraints; `NULL` auto-selects all `bio*` columns.
+-   **`scale_data`** — whether to standardize morphological and environmental data before fitting.
+-   **`env_cor_threshold`** — correlation cutoff above which redundant environmental variables are dropped before the analysis.
+
+### geo_enm()
+
+Ecological Niche Modelling: fits a presence/background model per taxon (with a spatial buffer, cross-validation folds, and permutation-based variable importance), optionally mapped with country/state borders.
+
+```{r eval = FALSE}
+
+geo_enm(geodata = geomatrix,
+        buffer_km = 100,
+        pa_ratio = 2,
+        folds = 5,
+        min_occ = 3,
+        importance_perm = 10,
+        seed = 123,
+        show_country_states = NULL,
+        inset = TRUE,
+        save = TRUE,
+        file_formats = "jpg",
+        verbose = TRUE)
+```
+
+-   **`buffer_km`** — radius (km) around occurrences used to define the background/pseudo-absence area.
+-   **`pa_ratio`** — ratio of background/pseudo-absence points to presence points.
+-   **`folds`** — number of cross-validation folds.
+-   **`min_occ`** — minimum number of occurrences required to model a taxon.
+-   **`importance_perm`** — number of permutations used to estimate variable importance.
+
+### geo_niche_overlap()
+
+Quantifies niche overlap between taxa in environmental space (e.g. Schoener's D-type metrics), with a similarity/equivalence test based on randomization.
+
+```{r eval = FALSE}
+
+geo_niche_overlap(geodata = geomatrix,
+                  var_threshold = 0.95,
+                  cor_cutoff = 0.8,
+                  grid_size = 100,
+                  iterations = 1000,
+                  alpha = 0.05,
+                  min_occ = 3,
+                  n_cores = 1,
+                  seed = 123,
+                  save = TRUE,
+                  file_formats = "jpg",
+                  verbose = TRUE)
+```
+
+-   **`var_threshold`** — variance-explained threshold used when reducing environmental variables (e.g. via PCA) before building the niche space.
+-   **`cor_cutoff`** — correlation cutoff for dropping redundant environmental variables.
+-   **`grid_size`** — resolution of the environmental-space grid used to estimate niche overlap.
+-   **`iterations`** — number of randomizations for the overlap significance test.
+-   **`n_cores`** — number of cores used for parallel computation.

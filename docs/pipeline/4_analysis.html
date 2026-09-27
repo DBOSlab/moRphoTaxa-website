@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Run analysis – moRphoTaxa</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../pipeline/3_add_morphological_traits.html" rel="prev">
+<link href="../figures/moRphoTaxa_hex_sticker.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3a76dd4b07d3920d00ac0189e36ab99b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-272140672ecf9daaf4d21f8d6523eca9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-3a76dd4b07d3920d00ac0189e36ab99b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-KHBDBW7');</script>
+<!-- End Google Tag Manager -->
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../figures/moRphoTaxa_hex_sticker.png" alt="" class="navbar-logo light-content">
+    <img src="../figures/moRphoTaxa_hex_sticker.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">moRphoTaxa</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../pipeline/index.html" aria-current="page"> 
+<span class="menu-text">Pipeline</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/index.html"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../authors/index.html"> 
+<span class="menu-text">Authors</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-help" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Help</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-help">    
+        <li>
+    <a class="dropdown-item" href="https://github.com/DBOSlab/moRphoTaxa/issues"><i class="bi bi-bug" role="img">
+</i> 
+ <span class="dropdown-text">Report a Bug</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/DBOSlab/moRphoTaxa/discussions"><i class="bi bi-chat-right-text" role="img">
+</i> 
+ <span class="dropdown-text">Ask a Question</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="https://github.com/DBOSlab/moRphoTaxa" title="moRphoTaxa GitHub" class="quarto-navigation-tool px-1" aria-label="moRphoTaxa GitHub"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pipeline/4_analysis.html">4. Run analysis</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pipeline/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pipeline/1_get_herbarium_specimens.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Get herbarium data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pipeline/2_clean_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. Clean occurrence data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pipeline/3_add_morphological_traits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Add morphological traits</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pipeline/4_analysis.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">4. Run analysis</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-this-script-does" id="toc-what-this-script-does" class="nav-link active" data-scroll-target="#what-this-script-does">What this script does</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a>
+  <ul class="collapse">
+  <li><a href="#morph_matrix_setting" id="toc-morph_matrix_setting" class="nav-link" data-scroll-target="#morph_matrix_setting">morph_matrix_setting()</a></li>
+  </ul></li>
+  <li><a href="#data-quality-exploration" id="toc-data-quality-exploration" class="nav-link" data-scroll-target="#data-quality-exploration">Data quality &amp; exploration</a>
+  <ul class="collapse">
+  <li><a href="#morph_normality" id="toc-morph_normality" class="nav-link" data-scroll-target="#morph_normality">morph_normality()</a></li>
+  <li><a href="#morph_boxplots" id="toc-morph_boxplots" class="nav-link" data-scroll-target="#morph_boxplots">morph_boxplots()</a></li>
+  <li><a href="#morph_similarity" id="toc-morph_similarity" class="nav-link" data-scroll-target="#morph_similarity">morph_similarity()</a></li>
+  </ul></li>
+  <li><a href="#ordination" id="toc-ordination" class="nav-link" data-scroll-target="#ordination">Ordination</a>
+  <ul class="collapse">
+  <li><a href="#morph_pca" id="toc-morph_pca" class="nav-link" data-scroll-target="#morph_pca">morph_pca()</a></li>
+  <li><a href="#morph_pcoa" id="toc-morph_pcoa" class="nav-link" data-scroll-target="#morph_pcoa">morph_pcoa()</a></li>
+  <li><a href="#morph_nmds" id="toc-morph_nmds" class="nav-link" data-scroll-target="#morph_nmds">morph_nmds()</a></li>
+  </ul></li>
+  <li><a href="#clustering" id="toc-clustering" class="nav-link" data-scroll-target="#clustering">Clustering</a>
+  <ul class="collapse">
+  <li><a href="#morph_dendrogram" id="toc-morph_dendrogram" class="nav-link" data-scroll-target="#morph_dendrogram">morph_dendrogram()</a></li>
+  <li><a href="#morph_kmeans" id="toc-morph_kmeans" class="nav-link" data-scroll-target="#morph_kmeans">morph_kmeans()</a></li>
+  <li><a href="#morph_nmm" id="toc-morph_nmm" class="nav-link" data-scroll-target="#morph_nmm">morph_nmm()</a></li>
+  </ul></li>
+  <li><a href="#confirmatory" id="toc-confirmatory" class="nav-link" data-scroll-target="#confirmatory">Confirmatory</a>
+  <ul class="collapse">
+  <li><a href="#morph_anova" id="toc-morph_anova" class="nav-link" data-scroll-target="#morph_anova">morph_anova()</a></li>
+  <li><a href="#morph_permanova" id="toc-morph_permanova" class="nav-link" data-scroll-target="#morph_permanova">morph_permanova()</a></li>
+  <li><a href="#morph_kruskal" id="toc-morph_kruskal" class="nav-link" data-scroll-target="#morph_kruskal">morph_kruskal()</a></li>
+  <li><a href="#morph_lda" id="toc-morph_lda" class="nav-link" data-scroll-target="#morph_lda">morph_lda()</a></li>
+  <li><a href="#morph_cva" id="toc-morph_cva" class="nav-link" data-scroll-target="#morph_cva">morph_cva()</a></li>
+  <li><a href="#morph_dapc" id="toc-morph_dapc" class="nav-link" data-scroll-target="#morph_dapc">morph_dapc()</a></li>
+  </ul></li>
+  <li><a href="#environmental-niche-analysis" id="toc-environmental-niche-analysis" class="nav-link" data-scroll-target="#environmental-niche-analysis">Environmental &amp; niche analysis</a>
+  <ul class="collapse">
+  <li><a href="#geo_matrix_setting" id="toc-geo_matrix_setting" class="nav-link" data-scroll-target="#geo_matrix_setting">geo_matrix_setting()</a></li>
+  <li><a href="#geo_bioclim_exploratory" id="toc-geo_bioclim_exploratory" class="nav-link" data-scroll-target="#geo_bioclim_exploratory">geo_bioclim_exploratory()</a></li>
+  <li><a href="#geo_bioclim_maps" id="toc-geo_bioclim_maps" class="nav-link" data-scroll-target="#geo_bioclim_maps">geo_bioclim_maps()</a></li>
+  <li><a href="#geo_morph_mantel" id="toc-geo_morph_mantel" class="nav-link" data-scroll-target="#geo_morph_mantel">geo_morph_mantel()</a></li>
+  <li><a href="#morph_autocorrelation" id="toc-morph_autocorrelation" class="nav-link" data-scroll-target="#morph_autocorrelation">morph_autocorrelation()</a></li>
+  <li><a href="#geo_morph_rda" id="toc-geo_morph_rda" class="nav-link" data-scroll-target="#geo_morph_rda">geo_morph_rda()</a></li>
+  <li><a href="#geo_enm" id="toc-geo_enm" class="nav-link" data-scroll-target="#geo_enm">geo_enm()</a></li>
+  <li><a href="#geo_niche_overlap" id="toc-geo_niche_overlap" class="nav-link" data-scroll-target="#geo_niche_overlap">geo_niche_overlap()</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KHBDBW7" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Run analysis</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="what-this-script-does" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-script-does">What this script does</h2>
+<p>Runs the full downstream analysis on a curated morphological + occurrence dataset using the <code>moRphoTaxa</code> package: builds the morphometric and ecogeographic matrices, checks data quality, explores structure through ordination and clustering, tests group differences with confirmatory statistics, and closes with an environmental/niche analysis based on WorldClim and SoilGrids variables.</p>
+<p>Most analysis functions share a small set of conventions:</p>
+<ul>
+<li>A <code>*_blocks</code> argument selects which trait block(s) to analyze — <code>"veg"</code> (vegetative), <code>"flo"</code> (floral), <code>"fru"</code> (fruit), or <code>"all"</code>. Blocks are defined by the <code>veg_first</code>/<code>flo_first</code>/<code>fru_first</code> boundaries set in <code>morph_matrix_setting()</code>.</li>
+<li><code>file_formats</code> controls which image format(s) each function saves its plots in (e.g.&nbsp;<code>"jpeg"</code>, <code>"pdf"</code>, or <code>c("pdf", "jpeg")</code>).</li>
+<li><code>verbose</code> controls whether the function prints progress/status messages, including the location of saved files.</li>
+<li><code>save_xlsx</code> (where available) controls whether numeric results are additionally exported to an Excel workbook alongside the plots.</li>
+</ul>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># moRphoTaxa: https://dboslab.github.io/moRphoTaxa-website/</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#devtools::install_github("DBOSlab/moRphoTaxa")</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(moRphoTaxa)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="morph_matrix_setting" class="level3">
+<h3 class="anchored" data-anchor-id="morph_matrix_setting">morph_matrix_setting()</h3>
+<p>Reads the curated dataset (an Excel file with one row per specimen/occurrence and one taxon column) and builds the standardized morphometric matrix used by every <code>morph_*()</code> function downstream. It also stores the vegetative/floral/fruit block boundaries as attributes so subsequent functions know which columns belong to which block.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>morphmatrix <span class="ot">&lt;-</span> <span class="fu">morph_matrix_setting</span>(<span class="at">xlsx_path =</span> <span class="st">"output_data/all_data.xlsx"</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">taxon_col =</span> <span class="st">"taxon"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">species_selected =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">trait_name_type =</span> <span class="st">"code"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">veg_first =</span> <span class="st">"petiole_length/PETIlng"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">flo_first =</span> <span class="st">"inflorescence_length/INFLlng"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">fru_first =</span> <span class="st">"fruit_stipe_length/FRSTlng"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">colors =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>xlsx_path</code></strong> — path to the source Excel file.</li>
+<li><strong><code>taxon_col</code></strong> — name of the column identifying taxa/groups.</li>
+<li><strong><code>species_selected</code></strong> — optional character vector to restrict the matrix to specific taxa; <code>NULL</code> keeps all of them.</li>
+<li><strong><code>trait_name_type</code></strong> — whether trait columns in the source file are labeled by <code>"code"</code>, full name, or both (must match how the file was produced, e.g.&nbsp;by <code>morph_add_traits()</code>).</li>
+<li><strong><code>veg_first</code>, <code>flo_first</code>, <code>fru_first</code></strong> — the first column of each block (vegetative, floral, fruit), used to split the trait matrix into the <code>"veg"</code>/<code>"flo"</code>/<code>"fru"</code> blocks referenced everywhere else in the pipeline.</li>
+<li><strong><code>colors</code></strong> — optional named vector assigning a color to each taxon; if <code>NULL</code>, colors are generated automatically and stored as a <code>taxon_colors</code> attribute reused by every plotting function below.</li>
+</ul>
+</section>
+</section>
+<section id="data-quality-exploration" class="level2">
+<h2 class="anchored" data-anchor-id="data-quality-exploration">Data quality &amp; exploration</h2>
+<section id="morph_normality" class="level3">
+<h3 class="anchored" data-anchor-id="morph_normality">morph_normality()</h3>
+<p>Tests each quantitative trait for normality (per block) and optionally produces Q-Q plots.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_normality</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">norm_alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">norm_qq =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>norm_alpha</code></strong> — significance threshold for the normality test.</li>
+<li><strong><code>norm_qq</code></strong> — whether to also produce Q-Q plots for each trait.</li>
+</ul>
+</section>
+<section id="morph_boxplots" class="level3">
+<h3 class="anchored" data-anchor-id="morph_boxplots">morph_boxplots()</h3>
+<p>Draws boxplots (or violin plots) of each trait by taxon, for visual comparison across groups.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_boxplots</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">plot_type =</span> <span class="st">"violin"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">show_jitter =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">min_n_total =</span> <span class="dv">10</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>plot_type</code></strong> — <code>"boxplot"</code> or <code>"violin"</code>.</li>
+<li><strong><code>show_jitter</code></strong> — overlay individual data points as jitter.</li>
+<li><strong><code>min_n_total</code></strong> — minimum total sample size for a trait to be plotted.</li>
+</ul>
+</section>
+<section id="morph_similarity" class="level3">
+<h3 class="anchored" data-anchor-id="morph_similarity">morph_similarity()</h3>
+<p>Computes pairwise trait-to-trait correlations within each block and flags significant associations after multiple-testing correction.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_similarity</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_method =</span> <span class="st">"pearson"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_p_adjust =</span> <span class="st">"BH"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_min_n =</span> <span class="dv">5</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_pairs =</span> <span class="cn">NULL</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">file_formats =</span> <span class="st">"jpeg"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>sim_method</code></strong> — correlation method (e.g.&nbsp;<code>"pearson"</code>, <code>"spearman"</code>).</li>
+<li><strong><code>sim_p_adjust</code></strong> — p-value adjustment method (<code>"BH"</code> = Benjamini–Hochberg).</li>
+<li><strong><code>sim_min_n</code></strong> — minimum pairwise sample size for a trait pair to be included.</li>
+<li><strong><code>sim_pairs</code></strong> — list of character vectors of length two to produce an scatter plot</li>
+</ul>
+</section>
+</section>
+<section id="ordination" class="level2">
+<h2 class="anchored" data-anchor-id="ordination">Ordination</h2>
+<section id="morph_pca" class="level3">
+<h3 class="anchored" data-anchor-id="morph_pca">morph_pca()</h3>
+<p>Principal Component Analysis of the (quantitative) traits in each block, highlighting the top-contributing traits per axis.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_pca</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">pca_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">top_contrib =</span> <span class="dv">10</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>top_contrib</code></strong> — number of top-contributing traits reported/highlighted per component.</li>
+</ul>
+</section>
+<section id="morph_pcoa" class="level3">
+<h3 class="anchored" data-anchor-id="morph_pcoa">morph_pcoa()</h3>
+<p>Principal Coordinates Analysis on a dissimilarity matrix (default Gower, which handles mixed qualitative/quantitative traits), with an eigenvalue-correction method for negative eigenvalues.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_pcoa</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">pcoa_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">dist_method =</span> <span class="st">"gower"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">correction =</span> <span class="st">"lingoes"</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">top_vars =</span> <span class="dv">10</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>dist_method</code></strong> — dissimilarity metric (e.g.&nbsp;<code>"gower"</code>, <code>"bray"</code>).</li>
+<li><strong><code>correction</code></strong> — negative-eigenvalue correction (e.g.&nbsp;<code>"lingoes"</code>, <code>"cailliez"</code>).</li>
+<li><strong><code>top_vars</code></strong> — number of top-contributing variables reported.</li>
+</ul>
+</section>
+<section id="morph_nmds" class="level3">
+<h3 class="anchored" data-anchor-id="morph_nmds">morph_nmds()</h3>
+<p>Non-metric multidimensional scaling, an alternative rank-based ordination.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_nmds</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">nmds_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">nmds_dist =</span> <span class="st">"gower"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">nmds_k =</span> <span class="dv">2</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">nmds_trymax =</span> <span class="dv">100</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">nmds_seed =</span> <span class="dv">42</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>nmds_dist</code></strong> — distance method.</li>
+<li><strong><code>nmds_k</code></strong> — number of NMDS dimensions.</li>
+<li><strong><code>nmds_trymax</code></strong> — maximum number of random starts to find a stable solution.</li>
+<li><strong><code>nmds_seed</code></strong> — random seed, for reproducibility.</li>
+</ul>
+</section>
+</section>
+<section id="clustering" class="level2">
+<h2 class="anchored" data-anchor-id="clustering">Clustering</h2>
+<section id="morph_dendrogram" class="level3">
+<h3 class="anchored" data-anchor-id="morph_dendrogram">morph_dendrogram()</h3>
+<p>Hierarchical clustering (agglomerative), with a candidate linkage method and a search over the number of clusters up to <code>k_max</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_dendrogram</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dendro_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dist_method =</span> <span class="st">"bray"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">linkage_candidates =</span> <span class="st">"complete"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">k_max =</span> <span class="dv">8</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">cluster_cols =</span> <span class="cn">NULL</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">file_formats =</span> <span class="fu">c</span>(<span class="st">"pdf"</span>, <span class="st">"jpeg"</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>linkage_candidates</code></strong> — linkage method(s) to evaluate (e.g.&nbsp;<code>"complete"</code>, <code>"average"</code>, <code>"ward.D2"</code>).</li>
+<li><strong><code>k_max</code></strong> — upper bound on the number of clusters considered when cutting the tree.</li>
+<li><strong><code>cluster_cols</code></strong> — vector of colors used for dendrogram branches</li>
+</ul>
+</section>
+<section id="morph_kmeans" class="level3">
+<h3 class="anchored" data-anchor-id="morph_kmeans">morph_kmeans()</h3>
+<p>K-means partitioning, with a bootstrap procedure (<code>kmeans_B</code>) to help choose the number of clusters, visualized on the PCA axes produced by <code>morph_pca()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_kmeans</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_k_max =</span> <span class="dv">10</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_B =</span> <span class="dv">50</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_nstart =</span> <span class="dv">25</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_pcs =</span> <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_seed =</span> <span class="dv">123</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>kmeans_k_max</code></strong> — maximum number of clusters evaluated.</li>
+<li><strong><code>kmeans_B</code></strong> — number of bootstrap replicates used to assess cluster stability.</li>
+<li><strong><code>kmeans_nstart</code></strong> — number of random starts per k-means run (best solution kept).</li>
+<li><strong><code>kmeans_pcs</code></strong> — which PCA axes to plot the resulting clusters on.</li>
+</ul>
+</section>
+<section id="morph_nmm" class="level3">
+<h3 class="anchored" data-anchor-id="morph_nmm">morph_nmm()</h3>
+<p>Normal mixture-model clustering (via <code>mclust</code>), selecting the top contributing traits and drawing confidence ellipses per component.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_nmm</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">nmm_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">nmm_top_traits =</span> <span class="dv">10</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">nmm_min_n =</span> <span class="dv">10</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">ellipse_level =</span> <span class="fl">0.4</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">nmm_seed =</span> <span class="dv">123</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">save_xlsx =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>nmm_top_traits</code></strong> — number of traits used to fit/display the mixture model.</li>
+<li><strong><code>nmm_min_n</code></strong> — minimum sample size required to fit the model.</li>
+<li><strong><code>ellipse_level</code></strong> — confidence level of the plotted ellipses.</li>
+</ul>
+</section>
+</section>
+<section id="confirmatory" class="level2">
+<h2 class="anchored" data-anchor-id="confirmatory">Confirmatory</h2>
+<section id="morph_anova" class="level3">
+<h3 class="anchored" data-anchor-id="morph_anova">morph_anova()</h3>
+<p>One-way ANOVA of each quantitative trait by group, with multiple-testing correction.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_anova</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">anova_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">anova_groups =</span> <span class="st">"taxon"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">anova_p_adjust =</span> <span class="st">"BH"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">anova_alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">save_xlsx =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>anova_groups</code></strong> — grouping column used to test differences (typically <code>taxon_col</code>).</li>
+</ul>
+</section>
+<section id="morph_permanova" class="level3">
+<h3 class="anchored" data-anchor-id="morph_permanova">morph_permanova()</h3>
+<p>Permutational MANOVA on a dissimilarity matrix (default Gower), testing whether groups differ multivariately, with confidence ellipses on the ordination plot.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_permanova</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">permanova_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">dist_method =</span> <span class="st">"gower"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">permutations =</span> <span class="dv">999</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">min_n =</span> <span class="dv">3</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">p_adjust =</span> <span class="st">"BH"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">ellipse_level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>                <span class="at">save_xlsx =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>permutations</code></strong> — number of permutations used to build the null distribution.</li>
+<li><strong><code>min_n</code></strong> — minimum group size to be included in the test.</li>
+</ul>
+</section>
+<section id="morph_kruskal" class="level3">
+<h3 class="anchored" data-anchor-id="morph_kruskal">morph_kruskal()</h3>
+<p>Non-parametric alternative to <code>morph_anova()</code>: Kruskal–Wallis test per trait, with optional Dunn’s post-hoc pairwise comparisons.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_kruskal</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">kw_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">kw_groups =</span> <span class="st">"taxon"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">kw_p_adjust =</span> <span class="st">"BH"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">kw_alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">kw_posthoc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">save_xlsx =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>kw_posthoc</code></strong> — whether to run Dunn’s post-hoc test when the omnibus test is significant.</li>
+</ul>
+</section>
+<section id="morph_lda" class="level3">
+<h3 class="anchored" data-anchor-id="morph_lda">morph_lda()</h3>
+<p>Linear Discriminant Analysis (<code>MASS::lda</code>), plotted on the requested discriminant axes with confidence ellipses; missing values can be imputed before fitting.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_lda</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_group =</span> <span class="st">"taxon"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_lds =</span> <span class="fu">c</span>(<span class="st">"LD1"</span>, <span class="st">"LD2"</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_ellipse =</span> <span class="fl">0.95</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_min_n =</span> <span class="dv">3</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_impute =</span> <span class="st">"mean"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">save_xlsx =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>lda_lds</code></strong> — which discriminant axes to plot.</li>
+<li><strong><code>lda_impute</code></strong> — imputation strategy for missing trait values (e.g.&nbsp;<code>"mean"</code>, or <code>"none"</code>/<code>NULL</code> to drop incomplete cases, depending on the implementation).</li>
+</ul>
+</section>
+<section id="morph_cva" class="level3">
+<h3 class="anchored" data-anchor-id="morph_cva">morph_cva()</h3>
+<p>Canonical Variate Analysis, a group-mean-based alternative/complement to LDA for exploring shape/trait divergence among taxa.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_cva</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">cva_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">cva_ellipse =</span> <span class="fl">0.95</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">cva_min_n =</span> <span class="dv">3</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_formats =</span> <span class="fu">c</span>(<span class="st">"pdf"</span>, <span class="st">"jpeg"</span>),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>cva_ellipse</code></strong> — confidence level of the plotted group ellipses.</li>
+<li><strong><code>cva_min_n</code></strong> — minimum group size to be included.</li>
+</ul>
+</section>
+<section id="morph_dapc" class="level3">
+<h3 class="anchored" data-anchor-id="morph_dapc">morph_dapc()</h3>
+<p>Discriminant Analysis of Principal Components — combines a PCA dimensionality-reduction step with LDA, useful when traits are highly correlated or numerous relative to sample size.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_dapc</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">dapc_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">dapc_min_n =</span> <span class="dv">3</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">dapc_ellipse =</span> <span class="fl">0.95</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>dapc_min_n</code></strong> — minimum group size to be included.</li>
+</ul>
+</section>
+</section>
+<section id="environmental-niche-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="environmental-niche-analysis">Environmental &amp; niche analysis</h2>
+<section id="geo_matrix_setting" class="level3">
+<h3 class="anchored" data-anchor-id="geo_matrix_setting">geo_matrix_setting()</h3>
+<p>Builds the ecogeographic counterpart of <code>morph_matrix_setting()</code>: pulls WorldClim bioclimatic variables for each occurrence record (always) and, optionally, SoilGrids edaphic variables, returning a matrix analogous in structure to the morphometric one.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>geomatrix <span class="ot">&lt;-</span> <span class="fu">geo_matrix_setting</span>(<span class="at">xlsx_path =</span> <span class="st">"output_data/all_data.xlsx"</span>,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">sheet =</span> <span class="dv">1</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">taxon_col =</span> <span class="st">"taxon"</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">species_selected =</span> <span class="cn">NULL</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">wc_res =</span> <span class="fl">2.5</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">edaphic =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">edaphic_vars =</span> <span class="fu">c</span>(<span class="st">"clay"</span>, <span class="st">"sand"</span>, <span class="st">"silt"</span>, <span class="st">"soc"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"phh2o"</span>, <span class="st">"cec"</span>, <span class="st">"nitrogen"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"bdod"</span>, <span class="st">"cfvo"</span>, <span class="st">"ocd"</span>, <span class="st">"ocs"</span>),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>                                <span class="at">edaphic_depth =</span> <span class="dv">5</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>                                <span class="at">data_path =</span> <span class="st">"variables_data/"</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>                                <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>sheet</code></strong> — sheet of <code>xlsx_path</code> to read, when the file has more than one.</li>
+<li><strong><code>wc_res</code></strong> — WorldClim spatial resolution, in arc-minutes (e.g.&nbsp;<code>2.5</code>).</li>
+<li><strong><code>edaphic</code></strong> — whether to also fetch SoilGrids edaphic variables; when <code>FALSE</code>, only climate variables are used.</li>
+<li><strong><code>edaphic_vars</code></strong> — which SoilGrids variables to fetch (clay/sand/silt fractions, organic carbon, pH, CEC, nitrogen, bulk density, coarse fragments, organic carbon density/stock).</li>
+<li><strong><code>edaphic_depth</code></strong> — soil depth (cm) at which the edaphic variables are sampled.</li>
+<li><strong><code>data_path</code></strong> — folder where the downloaded/cached raster layers are stored.</li>
+</ul>
+</section>
+<section id="geo_bioclim_exploratory" class="level3">
+<h3 class="anchored" data-anchor-id="geo_bioclim_exploratory">geo_bioclim_exploratory()</h3>
+<p>Ranks the 19 bioclimatic variables by variance and pairwise correlation, and summarizes them with a PCA, exporting the ranking to Excel.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_bioclim_exploratory</span>(<span class="at">geodata =</span> geomatrix,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">bio_x =</span> <span class="dv">15</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">bio_y =</span> <span class="dv">12</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">cor_threshold =</span> <span class="fl">0.8</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>bio_x</code>, <code>bio_y</code></strong> — which two bioclimatic variables (by BIO code number) to use for the pairwise scatter/dispersion plot.</li>
+<li><strong><code>cor_threshold</code></strong> — correlation cutoff above which a variable pair is flagged as redundant.</li>
+</ul>
+</section>
+<section id="geo_bioclim_maps" class="level3">
+<h3 class="anchored" data-anchor-id="geo_bioclim_maps">geo_bioclim_maps()</h3>
+<p>Maps a chosen bioclimatic layer across the study area, together with occurrence points, with optional country/state borders and rivers.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_bioclim_maps</span>(<span class="at">geodata =</span> geomatrix,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bio_map_layer =</span> <span class="dv">12</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bio_x =</span> <span class="dv">1</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bio_y =</span> <span class="dv">12</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">show_country_states =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">show_rivers =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">river_scale =</span> <span class="dv">10</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">inset =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pt_shapes =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>                 <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>bio_map_layer</code></strong> — bioclimatic variable plotted as the background raster.</li>
+<li><strong><code>show_country_states</code></strong> — optional vector of country/state names to outline.</li>
+<li><strong><code>inset</code></strong> — whether to add a locator inset map.</li>
+<li><strong><code>pt_shapes</code></strong> — optional per-taxon point shapes for the occurrence markers.</li>
+</ul>
+</section>
+<section id="geo_morph_mantel" class="level3">
+<h3 class="anchored" data-anchor-id="geo_morph_mantel">geo_morph_mantel()</h3>
+<p>Mantel test comparing geographic distance to morphological (trait) distance, to check for isolation-by-distance-like patterns.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_morph_mantel</span>(<span class="at">geodata =</span> geomatrix,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">cor_method =</span> <span class="st">"pearson"</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">permutations =</span> <span class="dv">999</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dist_method =</span> <span class="st">"gower"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">geo_dist_method =</span> <span class="st">"euclidean"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>dist_method</code></strong> — dissimilarity metric for the morphological distance matrix.</li>
+<li><strong><code>geo_dist_method</code></strong> — distance metric for geographic coordinates.</li>
+</ul>
+</section>
+<section id="morph_autocorrelation" class="level3">
+<h3 class="anchored" data-anchor-id="morph_autocorrelation">morph_autocorrelation()</h3>
+<p>Tests each trait for lag-1 spatial autocorrelation along an ordering of the specimens (by latitude, longitude, or original row order), producing per-block plots and a summary table.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_autocorrelation</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">geodata =</span> geomatrix,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">cor_method =</span> <span class="st">"pearson"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">order_by =</span> <span class="st">"latitude"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>order_by</code></strong> — how specimens are ordered before computing the lag-1 autocorrelation: <code>"latitude"</code>, <code>"longitude"</code>, or <code>"none"</code> (keeps original row order).</li>
+</ul>
+</section>
+<section id="geo_morph_rda" class="level3">
+<h3 class="anchored" data-anchor-id="geo_morph_rda">geo_morph_rda()</h3>
+<p>Redundancy Analysis constraining morphological traits by bioclimatic variables, run per trait block, after dropping redundant environmental variables above a correlation threshold.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_morph_rda</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">geodata =</span> geomatrix,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">env_vars =</span> <span class="cn">NULL</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">permutations =</span> <span class="dv">999</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">scale_data =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">env_cor_threshold =</span> <span class="fl">0.95</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>env_vars</code></strong> — environmental variables to use as constraints; <code>NULL</code> auto-selects all <code>bio*</code> columns.</li>
+<li><strong><code>scale_data</code></strong> — whether to standardize morphological and environmental data before fitting.</li>
+<li><strong><code>env_cor_threshold</code></strong> — correlation cutoff above which redundant environmental variables are dropped before the analysis.</li>
+</ul>
+</section>
+<section id="geo_enm" class="level3">
+<h3 class="anchored" data-anchor-id="geo_enm">geo_enm()</h3>
+<p>Ecological Niche Modelling: fits a presence/background model per taxon (with a spatial buffer, cross-validation folds, and permutation-based variable importance), optionally mapped with country/state borders.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_enm</span>(<span class="at">geodata =</span> geomatrix,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">buffer_km =</span> <span class="dv">100</span>,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">pa_ratio =</span> <span class="dv">2</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">folds =</span> <span class="dv">5</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">min_occ =</span> <span class="dv">3</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">importance_perm =</span> <span class="dv">10</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">show_country_states =</span> <span class="cn">NULL</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">inset =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>buffer_km</code></strong> — radius (km) around occurrences used to define the background/pseudo-absence area.</li>
+<li><strong><code>pa_ratio</code></strong> — ratio of background/pseudo-absence points to presence points.</li>
+<li><strong><code>folds</code></strong> — number of cross-validation folds.</li>
+<li><strong><code>min_occ</code></strong> — minimum number of occurrences required to model a taxon.</li>
+<li><strong><code>importance_perm</code></strong> — number of permutations used to estimate variable importance.</li>
+</ul>
+</section>
+<section id="geo_niche_overlap" class="level3">
+<h3 class="anchored" data-anchor-id="geo_niche_overlap">geo_niche_overlap()</h3>
+<p>Quantifies niche overlap between taxa in environmental space (e.g.&nbsp;Schoener’s D-type metrics), with a similarity/equivalence test based on randomization.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_niche_overlap</span>(<span class="at">geodata =</span> geomatrix,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">var_threshold =</span> <span class="fl">0.95</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">cor_cutoff =</span> <span class="fl">0.8</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">grid_size =</span> <span class="dv">100</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">iterations =</span> <span class="dv">1000</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">min_occ =</span> <span class="dv">3</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">n_cores =</span> <span class="dv">1</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>                  <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><strong><code>var_threshold</code></strong> — variance-explained threshold used when reducing environmental variables (e.g.&nbsp;via PCA) before building the niche space.</li>
+<li><strong><code>cor_cutoff</code></strong> — correlation cutoff for dropping redundant environmental variables.</li>
+<li><strong><code>grid_size</code></strong> — resolution of the environmental-space grid used to estimate niche overlap.</li>
+<li><strong><code>iterations</code></strong> — number of randomizations for the overlap significance test.</li>
+<li><strong><code>n_cores</code></strong> — number of cores used for parallel computation.</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/dboslab\.github\.io\/moRphoTaxa-website\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../pipeline/3_add_morphological_traits.html" class="pagination-link" aria-label="3. Add morphological traits">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">3. Add morphological traits</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Run analysis"</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: true</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co">  freeze: auto</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## What this script does</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>Runs the full downstream analysis on a curated morphological + occurrence dataset using the <span class="in">`moRphoTaxa`</span> package: builds the morphometric and ecogeographic matrices, checks data quality, explores structure through ordination and clustering, tests group differences with confirmatory statistics, and closes with an environmental/niche analysis based on WorldClim and SoilGrids variables.</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>Most analysis functions share a small set of conventions:</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>A <span class="in">`*_blocks`</span> argument selects which trait block(s) to analyze — <span class="in">`"veg"`</span> (vegetative), <span class="in">`"flo"`</span> (floral), <span class="in">`"fru"`</span> (fruit), or <span class="in">`"all"`</span>. Blocks are defined by the <span class="in">`veg_first`</span>/<span class="in">`flo_first`</span>/<span class="in">`fru_first`</span> boundaries set in <span class="in">`morph_matrix_setting()`</span>.</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`file_formats`</span> controls which image format(s) each function saves its plots in (e.g. <span class="in">`"jpeg"`</span>, <span class="in">`"pdf"`</span>, or <span class="in">`c("pdf", "jpeg")`</span>).</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`verbose`</span> controls whether the function prints progress/status messages, including the location of saved files.</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`save_xlsx`</span> (where available) controls whether numeric results are additionally exported to an Excel workbook alongside the plots.</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a><span class="co"># moRphoTaxa: https://dboslab.github.io/moRphoTaxa-website/</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="co">#devtools::install_github("DBOSlab/moRphoTaxa")</span></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(moRphoTaxa)</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_matrix_setting()</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>Reads the curated dataset (an Excel file with one row per specimen/occurrence and one taxon column) and builds the standardized morphometric matrix used by every <span class="in">`morph_*()`</span> function downstream. It also stores the vegetative/floral/fruit block boundaries as attributes so subsequent functions know which columns belong to which block.</span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>morphmatrix <span class="ot">&lt;-</span> <span class="fu">morph_matrix_setting</span>(<span class="at">xlsx_path =</span> <span class="st">"output_data/all_data.xlsx"</span>,</span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">taxon_col =</span> <span class="st">"taxon"</span>,</span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">species_selected =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">trait_name_type =</span> <span class="st">"code"</span>,</span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">veg_first =</span> <span class="st">"petiole_length/PETIlng"</span>,</span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">flo_first =</span> <span class="st">"inflorescence_length/INFLlng"</span>,</span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">fru_first =</span> <span class="st">"fruit_stipe_length/FRSTlng"</span>,</span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">colors =</span> <span class="cn">NULL</span>)</span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`xlsx_path`** — path to the source Excel file.</span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`taxon_col`** — name of the column identifying taxa/groups.</span>
+<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`species_selected`** — optional character vector to restrict the matrix to specific taxa; <span class="in">`NULL`</span> keeps all of them.</span>
+<span id="cb26-50"><a href="#cb26-50" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`trait_name_type`** — whether trait columns in the source file are labeled by <span class="in">`"code"`</span>, full name, or both (must match how the file was produced, e.g. by <span class="in">`morph_add_traits()`</span>).</span>
+<span id="cb26-51"><a href="#cb26-51" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`veg_first`, `flo_first`, `fru_first`** — the first column of each block (vegetative, floral, fruit), used to split the trait matrix into the <span class="in">`"veg"`</span>/<span class="in">`"flo"`</span>/<span class="in">`"fru"`</span> blocks referenced everywhere else in the pipeline.</span>
+<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`colors`** — optional named vector assigning a color to each taxon; if <span class="in">`NULL`</span>, colors are generated automatically and stored as a <span class="in">`taxon_colors`</span> attribute reused by every plotting function below.</span>
+<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-54"><a href="#cb26-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data quality &amp; exploration</span></span>
+<span id="cb26-55"><a href="#cb26-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-56"><a href="#cb26-56" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_normality()</span></span>
+<span id="cb26-57"><a href="#cb26-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-58"><a href="#cb26-58" aria-hidden="true" tabindex="-1"></a>Tests each quantitative trait for normality (per block) and optionally produces Q-Q plots.</span>
+<span id="cb26-59"><a href="#cb26-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-60"><a href="#cb26-60" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-61"><a href="#cb26-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-62"><a href="#cb26-62" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_normality</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-63"><a href="#cb26-63" aria-hidden="true" tabindex="-1"></a>                <span class="at">norm_alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb26-64"><a href="#cb26-64" aria-hidden="true" tabindex="-1"></a>                <span class="at">norm_qq =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-65"><a href="#cb26-65" aria-hidden="true" tabindex="-1"></a>                <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-66"><a href="#cb26-66" aria-hidden="true" tabindex="-1"></a>                <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-67"><a href="#cb26-67" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-68"><a href="#cb26-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-69"><a href="#cb26-69" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`norm_alpha`** — significance threshold for the normality test.</span>
+<span id="cb26-70"><a href="#cb26-70" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`norm_qq`** — whether to also produce Q-Q plots for each trait.</span>
+<span id="cb26-71"><a href="#cb26-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-72"><a href="#cb26-72" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_boxplots()</span></span>
+<span id="cb26-73"><a href="#cb26-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-74"><a href="#cb26-74" aria-hidden="true" tabindex="-1"></a>Draws boxplots (or violin plots) of each trait by taxon, for visual comparison across groups.</span>
+<span id="cb26-75"><a href="#cb26-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-76"><a href="#cb26-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-77"><a href="#cb26-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-78"><a href="#cb26-78" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_boxplots</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-79"><a href="#cb26-79" aria-hidden="true" tabindex="-1"></a>               <span class="at">plot_type =</span> <span class="st">"violin"</span>,</span>
+<span id="cb26-80"><a href="#cb26-80" aria-hidden="true" tabindex="-1"></a>               <span class="at">show_jitter =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-81"><a href="#cb26-81" aria-hidden="true" tabindex="-1"></a>               <span class="at">min_n_total =</span> <span class="dv">10</span>,</span>
+<span id="cb26-82"><a href="#cb26-82" aria-hidden="true" tabindex="-1"></a>               <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-83"><a href="#cb26-83" aria-hidden="true" tabindex="-1"></a>               <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-84"><a href="#cb26-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-85"><a href="#cb26-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-86"><a href="#cb26-86" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`plot_type`** — <span class="in">`"boxplot"`</span> or <span class="in">`"violin"`</span>.</span>
+<span id="cb26-87"><a href="#cb26-87" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`show_jitter`** — overlay individual data points as jitter.</span>
+<span id="cb26-88"><a href="#cb26-88" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`min_n_total`** — minimum total sample size for a trait to be plotted.</span>
+<span id="cb26-89"><a href="#cb26-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-90"><a href="#cb26-90" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_similarity()</span></span>
+<span id="cb26-91"><a href="#cb26-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-92"><a href="#cb26-92" aria-hidden="true" tabindex="-1"></a>Computes pairwise trait-to-trait correlations within each block and flags significant associations after multiple-testing correction.</span>
+<span id="cb26-93"><a href="#cb26-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-94"><a href="#cb26-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-95"><a href="#cb26-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-96"><a href="#cb26-96" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_similarity</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-97"><a href="#cb26-97" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-98"><a href="#cb26-98" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_method =</span> <span class="st">"pearson"</span>,</span>
+<span id="cb26-99"><a href="#cb26-99" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_p_adjust =</span> <span class="st">"BH"</span>,</span>
+<span id="cb26-100"><a href="#cb26-100" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb26-101"><a href="#cb26-101" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_min_n =</span> <span class="dv">5</span>,</span>
+<span id="cb26-102"><a href="#cb26-102" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sim_pairs =</span> <span class="cn">NULL</span></span>
+<span id="cb26-103"><a href="#cb26-103" aria-hidden="true" tabindex="-1"></a>                 <span class="at">file_formats =</span> <span class="st">"jpeg"</span>)</span>
+<span id="cb26-104"><a href="#cb26-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-105"><a href="#cb26-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-106"><a href="#cb26-106" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`sim_method`** — correlation method (e.g. <span class="in">`"pearson"`</span>, <span class="in">`"spearman"`</span>).</span>
+<span id="cb26-107"><a href="#cb26-107" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`sim_p_adjust`** — p-value adjustment method (<span class="in">`"BH"`</span> = Benjamini–Hochberg).</span>
+<span id="cb26-108"><a href="#cb26-108" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`sim_min_n`** — minimum pairwise sample size for a trait pair to be included.</span>
+<span id="cb26-109"><a href="#cb26-109" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`sim_pairs`** — list of character vectors of length two to produce an scatter plot</span>
+<span id="cb26-110"><a href="#cb26-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-111"><a href="#cb26-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-112"><a href="#cb26-112" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ordination</span></span>
+<span id="cb26-113"><a href="#cb26-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-114"><a href="#cb26-114" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_pca()</span></span>
+<span id="cb26-115"><a href="#cb26-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-116"><a href="#cb26-116" aria-hidden="true" tabindex="-1"></a>Principal Component Analysis of the (quantitative) traits in each block, highlighting the top-contributing traits per axis.</span>
+<span id="cb26-117"><a href="#cb26-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-118"><a href="#cb26-118" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-119"><a href="#cb26-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-120"><a href="#cb26-120" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_pca</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-121"><a href="#cb26-121" aria-hidden="true" tabindex="-1"></a>          <span class="at">pca_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-122"><a href="#cb26-122" aria-hidden="true" tabindex="-1"></a>          <span class="at">top_contrib =</span> <span class="dv">10</span>,</span>
+<span id="cb26-123"><a href="#cb26-123" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-124"><a href="#cb26-124" aria-hidden="true" tabindex="-1"></a>          <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-125"><a href="#cb26-125" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-126"><a href="#cb26-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-127"><a href="#cb26-127" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`top_contrib`** — number of top-contributing traits reported/highlighted per component.</span>
+<span id="cb26-128"><a href="#cb26-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-129"><a href="#cb26-129" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_pcoa()</span></span>
+<span id="cb26-130"><a href="#cb26-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-131"><a href="#cb26-131" aria-hidden="true" tabindex="-1"></a>Principal Coordinates Analysis on a dissimilarity matrix (default Gower, which handles mixed qualitative/quantitative traits), with an eigenvalue-correction method for negative eigenvalues.</span>
+<span id="cb26-132"><a href="#cb26-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-133"><a href="#cb26-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-134"><a href="#cb26-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-135"><a href="#cb26-135" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_pcoa</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-136"><a href="#cb26-136" aria-hidden="true" tabindex="-1"></a>           <span class="at">pcoa_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-137"><a href="#cb26-137" aria-hidden="true" tabindex="-1"></a>           <span class="at">dist_method =</span> <span class="st">"gower"</span>,</span>
+<span id="cb26-138"><a href="#cb26-138" aria-hidden="true" tabindex="-1"></a>           <span class="at">correction =</span> <span class="st">"lingoes"</span>,</span>
+<span id="cb26-139"><a href="#cb26-139" aria-hidden="true" tabindex="-1"></a>           <span class="at">top_vars =</span> <span class="dv">10</span>,</span>
+<span id="cb26-140"><a href="#cb26-140" aria-hidden="true" tabindex="-1"></a>           <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-141"><a href="#cb26-141" aria-hidden="true" tabindex="-1"></a>           <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-142"><a href="#cb26-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-143"><a href="#cb26-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-144"><a href="#cb26-144" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`dist_method`** — dissimilarity metric (e.g. <span class="in">`"gower"`</span>, <span class="in">`"bray"`</span>).</span>
+<span id="cb26-145"><a href="#cb26-145" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`correction`** — negative-eigenvalue correction (e.g. <span class="in">`"lingoes"`</span>, <span class="in">`"cailliez"`</span>).</span>
+<span id="cb26-146"><a href="#cb26-146" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`top_vars`** — number of top-contributing variables reported.</span>
+<span id="cb26-147"><a href="#cb26-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-148"><a href="#cb26-148" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_nmds()</span></span>
+<span id="cb26-149"><a href="#cb26-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-150"><a href="#cb26-150" aria-hidden="true" tabindex="-1"></a>Non-metric multidimensional scaling, an alternative rank-based ordination.</span>
+<span id="cb26-151"><a href="#cb26-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-152"><a href="#cb26-152" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-153"><a href="#cb26-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-154"><a href="#cb26-154" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_nmds</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-155"><a href="#cb26-155" aria-hidden="true" tabindex="-1"></a>           <span class="at">nmds_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-156"><a href="#cb26-156" aria-hidden="true" tabindex="-1"></a>           <span class="at">nmds_dist =</span> <span class="st">"gower"</span>,</span>
+<span id="cb26-157"><a href="#cb26-157" aria-hidden="true" tabindex="-1"></a>           <span class="at">nmds_k =</span> <span class="dv">2</span>,</span>
+<span id="cb26-158"><a href="#cb26-158" aria-hidden="true" tabindex="-1"></a>           <span class="at">nmds_trymax =</span> <span class="dv">100</span>,</span>
+<span id="cb26-159"><a href="#cb26-159" aria-hidden="true" tabindex="-1"></a>           <span class="at">nmds_seed =</span> <span class="dv">42</span>,</span>
+<span id="cb26-160"><a href="#cb26-160" aria-hidden="true" tabindex="-1"></a>           <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-161"><a href="#cb26-161" aria-hidden="true" tabindex="-1"></a>           <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-162"><a href="#cb26-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-163"><a href="#cb26-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-164"><a href="#cb26-164" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`nmds_dist`** — distance method.</span>
+<span id="cb26-165"><a href="#cb26-165" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`nmds_k`** — number of NMDS dimensions.</span>
+<span id="cb26-166"><a href="#cb26-166" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`nmds_trymax`** — maximum number of random starts to find a stable solution.</span>
+<span id="cb26-167"><a href="#cb26-167" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`nmds_seed`** — random seed, for reproducibility.</span>
+<span id="cb26-168"><a href="#cb26-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-169"><a href="#cb26-169" aria-hidden="true" tabindex="-1"></a><span class="fu">## Clustering</span></span>
+<span id="cb26-170"><a href="#cb26-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-171"><a href="#cb26-171" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_dendrogram()</span></span>
+<span id="cb26-172"><a href="#cb26-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-173"><a href="#cb26-173" aria-hidden="true" tabindex="-1"></a>Hierarchical clustering (agglomerative), with a candidate linkage method and a search over the number of clusters up to <span class="in">`k_max`</span>.</span>
+<span id="cb26-174"><a href="#cb26-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-175"><a href="#cb26-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-176"><a href="#cb26-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-177"><a href="#cb26-177" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_dendrogram</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-178"><a href="#cb26-178" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dendro_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-179"><a href="#cb26-179" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dist_method =</span> <span class="st">"bray"</span>,</span>
+<span id="cb26-180"><a href="#cb26-180" aria-hidden="true" tabindex="-1"></a>                 <span class="at">linkage_candidates =</span> <span class="st">"complete"</span>,</span>
+<span id="cb26-181"><a href="#cb26-181" aria-hidden="true" tabindex="-1"></a>                 <span class="at">k_max =</span> <span class="dv">8</span>,</span>
+<span id="cb26-182"><a href="#cb26-182" aria-hidden="true" tabindex="-1"></a>                 <span class="at">cluster_cols =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-183"><a href="#cb26-183" aria-hidden="true" tabindex="-1"></a>                 <span class="at">file_formats =</span> <span class="fu">c</span>(<span class="st">"pdf"</span>, <span class="st">"jpeg"</span>),</span>
+<span id="cb26-184"><a href="#cb26-184" aria-hidden="true" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-185"><a href="#cb26-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-186"><a href="#cb26-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-187"><a href="#cb26-187" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`linkage_candidates`** — linkage method(s) to evaluate (e.g. <span class="in">`"complete"`</span>, <span class="in">`"average"`</span>, <span class="in">`"ward.D2"`</span>).</span>
+<span id="cb26-188"><a href="#cb26-188" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`k_max`** — upper bound on the number of clusters considered when cutting the tree.</span>
+<span id="cb26-189"><a href="#cb26-189" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`cluster_cols`** — vector of colors used for dendrogram branches</span>
+<span id="cb26-190"><a href="#cb26-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-191"><a href="#cb26-191" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_kmeans()</span></span>
+<span id="cb26-192"><a href="#cb26-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-193"><a href="#cb26-193" aria-hidden="true" tabindex="-1"></a>K-means partitioning, with a bootstrap procedure (<span class="in">`kmeans_B`</span>) to help choose the number of clusters, visualized on the PCA axes produced by <span class="in">`morph_pca()`</span>.</span>
+<span id="cb26-194"><a href="#cb26-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-195"><a href="#cb26-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-196"><a href="#cb26-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-197"><a href="#cb26-197" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_kmeans</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-198"><a href="#cb26-198" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-199"><a href="#cb26-199" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_k_max =</span> <span class="dv">10</span>,</span>
+<span id="cb26-200"><a href="#cb26-200" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_B =</span> <span class="dv">50</span>,</span>
+<span id="cb26-201"><a href="#cb26-201" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_nstart =</span> <span class="dv">25</span>,</span>
+<span id="cb26-202"><a href="#cb26-202" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_pcs =</span> <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>),</span>
+<span id="cb26-203"><a href="#cb26-203" aria-hidden="true" tabindex="-1"></a>             <span class="at">kmeans_seed =</span> <span class="dv">123</span>,</span>
+<span id="cb26-204"><a href="#cb26-204" aria-hidden="true" tabindex="-1"></a>             <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-205"><a href="#cb26-205" aria-hidden="true" tabindex="-1"></a>             <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-206"><a href="#cb26-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-207"><a href="#cb26-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-208"><a href="#cb26-208" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`kmeans_k_max`** — maximum number of clusters evaluated.</span>
+<span id="cb26-209"><a href="#cb26-209" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`kmeans_B`** — number of bootstrap replicates used to assess cluster stability.</span>
+<span id="cb26-210"><a href="#cb26-210" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`kmeans_nstart`** — number of random starts per k-means run (best solution kept).</span>
+<span id="cb26-211"><a href="#cb26-211" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`kmeans_pcs`** — which PCA axes to plot the resulting clusters on.</span>
+<span id="cb26-212"><a href="#cb26-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-213"><a href="#cb26-213" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_nmm()</span></span>
+<span id="cb26-214"><a href="#cb26-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-215"><a href="#cb26-215" aria-hidden="true" tabindex="-1"></a>Normal mixture-model clustering (via <span class="in">`mclust`</span>), selecting the top contributing traits and drawing confidence ellipses per component.</span>
+<span id="cb26-216"><a href="#cb26-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-217"><a href="#cb26-217" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-218"><a href="#cb26-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-219"><a href="#cb26-219" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_nmm</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-220"><a href="#cb26-220" aria-hidden="true" tabindex="-1"></a>          <span class="at">nmm_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-221"><a href="#cb26-221" aria-hidden="true" tabindex="-1"></a>          <span class="at">nmm_top_traits =</span> <span class="dv">10</span>,</span>
+<span id="cb26-222"><a href="#cb26-222" aria-hidden="true" tabindex="-1"></a>          <span class="at">nmm_min_n =</span> <span class="dv">10</span>,</span>
+<span id="cb26-223"><a href="#cb26-223" aria-hidden="true" tabindex="-1"></a>          <span class="at">ellipse_level =</span> <span class="fl">0.4</span>,</span>
+<span id="cb26-224"><a href="#cb26-224" aria-hidden="true" tabindex="-1"></a>          <span class="at">nmm_seed =</span> <span class="dv">123</span>,</span>
+<span id="cb26-225"><a href="#cb26-225" aria-hidden="true" tabindex="-1"></a>          <span class="at">save_xlsx =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-226"><a href="#cb26-226" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-227"><a href="#cb26-227" aria-hidden="true" tabindex="-1"></a>          <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-228"><a href="#cb26-228" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-229"><a href="#cb26-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-230"><a href="#cb26-230" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`nmm_top_traits`** — number of traits used to fit/display the mixture model.</span>
+<span id="cb26-231"><a href="#cb26-231" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`nmm_min_n`** — minimum sample size required to fit the model.</span>
+<span id="cb26-232"><a href="#cb26-232" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`ellipse_level`** — confidence level of the plotted ellipses.</span>
+<span id="cb26-233"><a href="#cb26-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-234"><a href="#cb26-234" aria-hidden="true" tabindex="-1"></a><span class="fu">## Confirmatory</span></span>
+<span id="cb26-235"><a href="#cb26-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-236"><a href="#cb26-236" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_anova()</span></span>
+<span id="cb26-237"><a href="#cb26-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-238"><a href="#cb26-238" aria-hidden="true" tabindex="-1"></a>One-way ANOVA of each quantitative trait by group, with multiple-testing correction.</span>
+<span id="cb26-239"><a href="#cb26-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-240"><a href="#cb26-240" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-241"><a href="#cb26-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-242"><a href="#cb26-242" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_anova</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-243"><a href="#cb26-243" aria-hidden="true" tabindex="-1"></a>            <span class="at">anova_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-244"><a href="#cb26-244" aria-hidden="true" tabindex="-1"></a>            <span class="at">anova_groups =</span> <span class="st">"taxon"</span>,</span>
+<span id="cb26-245"><a href="#cb26-245" aria-hidden="true" tabindex="-1"></a>            <span class="at">anova_p_adjust =</span> <span class="st">"BH"</span>,</span>
+<span id="cb26-246"><a href="#cb26-246" aria-hidden="true" tabindex="-1"></a>            <span class="at">anova_alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb26-247"><a href="#cb26-247" aria-hidden="true" tabindex="-1"></a>            <span class="at">save_xlsx =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-248"><a href="#cb26-248" aria-hidden="true" tabindex="-1"></a>            <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-249"><a href="#cb26-249" aria-hidden="true" tabindex="-1"></a>            <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-250"><a href="#cb26-250" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-251"><a href="#cb26-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-252"><a href="#cb26-252" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`anova_groups`** — grouping column used to test differences (typically <span class="in">`taxon_col`</span>).</span>
+<span id="cb26-253"><a href="#cb26-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-254"><a href="#cb26-254" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_permanova()</span></span>
+<span id="cb26-255"><a href="#cb26-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-256"><a href="#cb26-256" aria-hidden="true" tabindex="-1"></a>Permutational MANOVA on a dissimilarity matrix (default Gower), testing whether groups differ multivariately, with confidence ellipses on the ordination plot.</span>
+<span id="cb26-257"><a href="#cb26-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-258"><a href="#cb26-258" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-259"><a href="#cb26-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-260"><a href="#cb26-260" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_permanova</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-261"><a href="#cb26-261" aria-hidden="true" tabindex="-1"></a>                <span class="at">permanova_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-262"><a href="#cb26-262" aria-hidden="true" tabindex="-1"></a>                <span class="at">dist_method =</span> <span class="st">"gower"</span>,</span>
+<span id="cb26-263"><a href="#cb26-263" aria-hidden="true" tabindex="-1"></a>                <span class="at">permutations =</span> <span class="dv">999</span>,</span>
+<span id="cb26-264"><a href="#cb26-264" aria-hidden="true" tabindex="-1"></a>                <span class="at">min_n =</span> <span class="dv">3</span>,</span>
+<span id="cb26-265"><a href="#cb26-265" aria-hidden="true" tabindex="-1"></a>                <span class="at">p_adjust =</span> <span class="st">"BH"</span>,</span>
+<span id="cb26-266"><a href="#cb26-266" aria-hidden="true" tabindex="-1"></a>                <span class="at">ellipse_level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb26-267"><a href="#cb26-267" aria-hidden="true" tabindex="-1"></a>                <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb26-268"><a href="#cb26-268" aria-hidden="true" tabindex="-1"></a>                <span class="at">save_xlsx =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-269"><a href="#cb26-269" aria-hidden="true" tabindex="-1"></a>                <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-270"><a href="#cb26-270" aria-hidden="true" tabindex="-1"></a>                <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-271"><a href="#cb26-271" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-272"><a href="#cb26-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-273"><a href="#cb26-273" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`permutations`** — number of permutations used to build the null distribution.</span>
+<span id="cb26-274"><a href="#cb26-274" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`min_n`** — minimum group size to be included in the test.</span>
+<span id="cb26-275"><a href="#cb26-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-276"><a href="#cb26-276" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_kruskal()</span></span>
+<span id="cb26-277"><a href="#cb26-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-278"><a href="#cb26-278" aria-hidden="true" tabindex="-1"></a>Non-parametric alternative to <span class="in">`morph_anova()`</span>: Kruskal–Wallis test per trait, with optional Dunn's post-hoc pairwise comparisons.</span>
+<span id="cb26-279"><a href="#cb26-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-280"><a href="#cb26-280" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-281"><a href="#cb26-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-282"><a href="#cb26-282" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_kruskal</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-283"><a href="#cb26-283" aria-hidden="true" tabindex="-1"></a>              <span class="at">kw_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-284"><a href="#cb26-284" aria-hidden="true" tabindex="-1"></a>              <span class="at">kw_groups =</span> <span class="st">"taxon"</span>,</span>
+<span id="cb26-285"><a href="#cb26-285" aria-hidden="true" tabindex="-1"></a>              <span class="at">kw_p_adjust =</span> <span class="st">"BH"</span>,</span>
+<span id="cb26-286"><a href="#cb26-286" aria-hidden="true" tabindex="-1"></a>              <span class="at">kw_alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb26-287"><a href="#cb26-287" aria-hidden="true" tabindex="-1"></a>              <span class="at">kw_posthoc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-288"><a href="#cb26-288" aria-hidden="true" tabindex="-1"></a>              <span class="at">save_xlsx =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-289"><a href="#cb26-289" aria-hidden="true" tabindex="-1"></a>              <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-290"><a href="#cb26-290" aria-hidden="true" tabindex="-1"></a>              <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-291"><a href="#cb26-291" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-292"><a href="#cb26-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-293"><a href="#cb26-293" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`kw_posthoc`** — whether to run Dunn's post-hoc test when the omnibus test is significant.</span>
+<span id="cb26-294"><a href="#cb26-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-295"><a href="#cb26-295" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_lda()</span></span>
+<span id="cb26-296"><a href="#cb26-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-297"><a href="#cb26-297" aria-hidden="true" tabindex="-1"></a>Linear Discriminant Analysis (<span class="in">`MASS::lda`</span>), plotted on the requested discriminant axes with confidence ellipses; missing values can be imputed before fitting.</span>
+<span id="cb26-298"><a href="#cb26-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-299"><a href="#cb26-299" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-300"><a href="#cb26-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-301"><a href="#cb26-301" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_lda</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-302"><a href="#cb26-302" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-303"><a href="#cb26-303" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_group =</span> <span class="st">"taxon"</span>,</span>
+<span id="cb26-304"><a href="#cb26-304" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_lds =</span> <span class="fu">c</span>(<span class="st">"LD1"</span>, <span class="st">"LD2"</span>),</span>
+<span id="cb26-305"><a href="#cb26-305" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_ellipse =</span> <span class="fl">0.95</span>,</span>
+<span id="cb26-306"><a href="#cb26-306" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_min_n =</span> <span class="dv">3</span>,</span>
+<span id="cb26-307"><a href="#cb26-307" aria-hidden="true" tabindex="-1"></a>          <span class="at">lda_impute =</span> <span class="st">"mean"</span>,</span>
+<span id="cb26-308"><a href="#cb26-308" aria-hidden="true" tabindex="-1"></a>          <span class="at">save_xlsx =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-309"><a href="#cb26-309" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-310"><a href="#cb26-310" aria-hidden="true" tabindex="-1"></a>          <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-311"><a href="#cb26-311" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-312"><a href="#cb26-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-313"><a href="#cb26-313" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`lda_lds`** — which discriminant axes to plot.</span>
+<span id="cb26-314"><a href="#cb26-314" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`lda_impute`** — imputation strategy for missing trait values (e.g. <span class="in">`"mean"`</span>, or <span class="in">`"none"`</span>/<span class="in">`NULL`</span> to drop incomplete cases, depending on the implementation).</span>
+<span id="cb26-315"><a href="#cb26-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-316"><a href="#cb26-316" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_cva()</span></span>
+<span id="cb26-317"><a href="#cb26-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-318"><a href="#cb26-318" aria-hidden="true" tabindex="-1"></a>Canonical Variate Analysis, a group-mean-based alternative/complement to LDA for exploring shape/trait divergence among taxa.</span>
+<span id="cb26-319"><a href="#cb26-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-320"><a href="#cb26-320" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-321"><a href="#cb26-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-322"><a href="#cb26-322" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_cva</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-323"><a href="#cb26-323" aria-hidden="true" tabindex="-1"></a>          <span class="at">cva_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-324"><a href="#cb26-324" aria-hidden="true" tabindex="-1"></a>          <span class="at">cva_ellipse =</span> <span class="fl">0.95</span>,</span>
+<span id="cb26-325"><a href="#cb26-325" aria-hidden="true" tabindex="-1"></a>          <span class="at">cva_min_n =</span> <span class="dv">3</span>,</span>
+<span id="cb26-326"><a href="#cb26-326" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_formats =</span> <span class="fu">c</span>(<span class="st">"pdf"</span>, <span class="st">"jpeg"</span>),</span>
+<span id="cb26-327"><a href="#cb26-327" aria-hidden="true" tabindex="-1"></a>          <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-328"><a href="#cb26-328" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-329"><a href="#cb26-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-330"><a href="#cb26-330" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`cva_ellipse`** — confidence level of the plotted group ellipses.</span>
+<span id="cb26-331"><a href="#cb26-331" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`cva_min_n`** — minimum group size to be included.</span>
+<span id="cb26-332"><a href="#cb26-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-333"><a href="#cb26-333" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_dapc()</span></span>
+<span id="cb26-334"><a href="#cb26-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-335"><a href="#cb26-335" aria-hidden="true" tabindex="-1"></a>Discriminant Analysis of Principal Components — combines a PCA dimensionality-reduction step with LDA, useful when traits are highly correlated or numerous relative to sample size.</span>
+<span id="cb26-336"><a href="#cb26-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-337"><a href="#cb26-337" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-338"><a href="#cb26-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-339"><a href="#cb26-339" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_dapc</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-340"><a href="#cb26-340" aria-hidden="true" tabindex="-1"></a>           <span class="at">dapc_blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-341"><a href="#cb26-341" aria-hidden="true" tabindex="-1"></a>           <span class="at">dapc_min_n =</span> <span class="dv">3</span>,</span>
+<span id="cb26-342"><a href="#cb26-342" aria-hidden="true" tabindex="-1"></a>           <span class="at">dapc_ellipse =</span> <span class="fl">0.95</span>,</span>
+<span id="cb26-343"><a href="#cb26-343" aria-hidden="true" tabindex="-1"></a>           <span class="at">file_formats =</span> <span class="st">"jpeg"</span>,</span>
+<span id="cb26-344"><a href="#cb26-344" aria-hidden="true" tabindex="-1"></a>           <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-345"><a href="#cb26-345" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-346"><a href="#cb26-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-347"><a href="#cb26-347" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`dapc_min_n`** — minimum group size to be included.</span>
+<span id="cb26-348"><a href="#cb26-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-349"><a href="#cb26-349" aria-hidden="true" tabindex="-1"></a><span class="fu">## Environmental &amp; niche analysis</span></span>
+<span id="cb26-350"><a href="#cb26-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-351"><a href="#cb26-351" aria-hidden="true" tabindex="-1"></a><span class="fu">### geo_matrix_setting()</span></span>
+<span id="cb26-352"><a href="#cb26-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-353"><a href="#cb26-353" aria-hidden="true" tabindex="-1"></a>Builds the ecogeographic counterpart of <span class="in">`morph_matrix_setting()`</span>: pulls WorldClim bioclimatic variables for each occurrence record (always) and, optionally, SoilGrids edaphic variables, returning a matrix analogous in structure to the morphometric one.</span>
+<span id="cb26-354"><a href="#cb26-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-355"><a href="#cb26-355" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-356"><a href="#cb26-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-357"><a href="#cb26-357" aria-hidden="true" tabindex="-1"></a>geomatrix <span class="ot">&lt;-</span> <span class="fu">geo_matrix_setting</span>(<span class="at">xlsx_path =</span> <span class="st">"output_data/all_data.xlsx"</span>,</span>
+<span id="cb26-358"><a href="#cb26-358" aria-hidden="true" tabindex="-1"></a>                                <span class="at">sheet =</span> <span class="dv">1</span>,</span>
+<span id="cb26-359"><a href="#cb26-359" aria-hidden="true" tabindex="-1"></a>                                <span class="at">taxon_col =</span> <span class="st">"taxon"</span>,</span>
+<span id="cb26-360"><a href="#cb26-360" aria-hidden="true" tabindex="-1"></a>                                <span class="at">species_selected =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-361"><a href="#cb26-361" aria-hidden="true" tabindex="-1"></a>                                <span class="at">wc_res =</span> <span class="fl">2.5</span>,</span>
+<span id="cb26-362"><a href="#cb26-362" aria-hidden="true" tabindex="-1"></a>                                <span class="at">edaphic =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-363"><a href="#cb26-363" aria-hidden="true" tabindex="-1"></a>                                <span class="at">edaphic_vars =</span> <span class="fu">c</span>(<span class="st">"clay"</span>, <span class="st">"sand"</span>, <span class="st">"silt"</span>, <span class="st">"soc"</span>,</span>
+<span id="cb26-364"><a href="#cb26-364" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"phh2o"</span>, <span class="st">"cec"</span>, <span class="st">"nitrogen"</span>,</span>
+<span id="cb26-365"><a href="#cb26-365" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"bdod"</span>, <span class="st">"cfvo"</span>, <span class="st">"ocd"</span>, <span class="st">"ocs"</span>),</span>
+<span id="cb26-366"><a href="#cb26-366" aria-hidden="true" tabindex="-1"></a>                                <span class="at">edaphic_depth =</span> <span class="dv">5</span>,</span>
+<span id="cb26-367"><a href="#cb26-367" aria-hidden="true" tabindex="-1"></a>                                <span class="at">data_path =</span> <span class="st">"variables_data/"</span>,</span>
+<span id="cb26-368"><a href="#cb26-368" aria-hidden="true" tabindex="-1"></a>                                <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-369"><a href="#cb26-369" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-370"><a href="#cb26-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-371"><a href="#cb26-371" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`sheet`** — sheet of <span class="in">`xlsx_path`</span> to read, when the file has more than one.</span>
+<span id="cb26-372"><a href="#cb26-372" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`wc_res`** — WorldClim spatial resolution, in arc-minutes (e.g. <span class="in">`2.5`</span>).</span>
+<span id="cb26-373"><a href="#cb26-373" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`edaphic`** — whether to also fetch SoilGrids edaphic variables; when <span class="in">`FALSE`</span>, only climate variables are used.</span>
+<span id="cb26-374"><a href="#cb26-374" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`edaphic_vars`** — which SoilGrids variables to fetch (clay/sand/silt fractions, organic carbon, pH, CEC, nitrogen, bulk density, coarse fragments, organic carbon density/stock).</span>
+<span id="cb26-375"><a href="#cb26-375" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`edaphic_depth`** — soil depth (cm) at which the edaphic variables are sampled.</span>
+<span id="cb26-376"><a href="#cb26-376" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`data_path`** — folder where the downloaded/cached raster layers are stored.</span>
+<span id="cb26-377"><a href="#cb26-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-378"><a href="#cb26-378" aria-hidden="true" tabindex="-1"></a><span class="fu">### geo_bioclim_exploratory()</span></span>
+<span id="cb26-379"><a href="#cb26-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-380"><a href="#cb26-380" aria-hidden="true" tabindex="-1"></a>Ranks the 19 bioclimatic variables by variance and pairwise correlation, and summarizes them with a PCA, exporting the ranking to Excel.</span>
+<span id="cb26-381"><a href="#cb26-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-382"><a href="#cb26-382" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-383"><a href="#cb26-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-384"><a href="#cb26-384" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_bioclim_exploratory</span>(<span class="at">geodata =</span> geomatrix,</span>
+<span id="cb26-385"><a href="#cb26-385" aria-hidden="true" tabindex="-1"></a>                        <span class="at">bio_x =</span> <span class="dv">15</span>,</span>
+<span id="cb26-386"><a href="#cb26-386" aria-hidden="true" tabindex="-1"></a>                        <span class="at">bio_y =</span> <span class="dv">12</span>,</span>
+<span id="cb26-387"><a href="#cb26-387" aria-hidden="true" tabindex="-1"></a>                        <span class="at">cor_threshold =</span> <span class="fl">0.8</span>,</span>
+<span id="cb26-388"><a href="#cb26-388" aria-hidden="true" tabindex="-1"></a>                        <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb26-389"><a href="#cb26-389" aria-hidden="true" tabindex="-1"></a>                        <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-390"><a href="#cb26-390" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-391"><a href="#cb26-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-392"><a href="#cb26-392" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`bio_x`, `bio_y`** — which two bioclimatic variables (by BIO code number) to use for the pairwise scatter/dispersion plot.</span>
+<span id="cb26-393"><a href="#cb26-393" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`cor_threshold`** — correlation cutoff above which a variable pair is flagged as redundant.</span>
+<span id="cb26-394"><a href="#cb26-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-395"><a href="#cb26-395" aria-hidden="true" tabindex="-1"></a><span class="fu">### geo_bioclim_maps()</span></span>
+<span id="cb26-396"><a href="#cb26-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-397"><a href="#cb26-397" aria-hidden="true" tabindex="-1"></a>Maps a chosen bioclimatic layer across the study area, together with occurrence points, with optional country/state borders and rivers.</span>
+<span id="cb26-398"><a href="#cb26-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-399"><a href="#cb26-399" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-400"><a href="#cb26-400" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-401"><a href="#cb26-401" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_bioclim_maps</span>(<span class="at">geodata =</span> geomatrix,</span>
+<span id="cb26-402"><a href="#cb26-402" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bio_map_layer =</span> <span class="dv">12</span>,</span>
+<span id="cb26-403"><a href="#cb26-403" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bio_x =</span> <span class="dv">1</span>,</span>
+<span id="cb26-404"><a href="#cb26-404" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bio_y =</span> <span class="dv">12</span>,</span>
+<span id="cb26-405"><a href="#cb26-405" aria-hidden="true" tabindex="-1"></a>                 <span class="at">show_country_states =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-406"><a href="#cb26-406" aria-hidden="true" tabindex="-1"></a>                 <span class="at">show_rivers =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb26-407"><a href="#cb26-407" aria-hidden="true" tabindex="-1"></a>                 <span class="at">river_scale =</span> <span class="dv">10</span>,</span>
+<span id="cb26-408"><a href="#cb26-408" aria-hidden="true" tabindex="-1"></a>                 <span class="at">inset =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-409"><a href="#cb26-409" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pt_shapes =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-410"><a href="#cb26-410" aria-hidden="true" tabindex="-1"></a>                 <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-411"><a href="#cb26-411" aria-hidden="true" tabindex="-1"></a>                 <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb26-412"><a href="#cb26-412" aria-hidden="true" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-413"><a href="#cb26-413" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-414"><a href="#cb26-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-415"><a href="#cb26-415" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`bio_map_layer`** — bioclimatic variable plotted as the background raster.</span>
+<span id="cb26-416"><a href="#cb26-416" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`show_country_states`** — optional vector of country/state names to outline.</span>
+<span id="cb26-417"><a href="#cb26-417" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`inset`** — whether to add a locator inset map.</span>
+<span id="cb26-418"><a href="#cb26-418" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`pt_shapes`** — optional per-taxon point shapes for the occurrence markers.</span>
+<span id="cb26-419"><a href="#cb26-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-420"><a href="#cb26-420" aria-hidden="true" tabindex="-1"></a><span class="fu">### geo_morph_mantel()</span></span>
+<span id="cb26-421"><a href="#cb26-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-422"><a href="#cb26-422" aria-hidden="true" tabindex="-1"></a>Mantel test comparing geographic distance to morphological (trait) distance, to check for isolation-by-distance-like patterns.</span>
+<span id="cb26-423"><a href="#cb26-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-424"><a href="#cb26-424" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-425"><a href="#cb26-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-426"><a href="#cb26-426" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_morph_mantel</span>(<span class="at">geodata =</span> geomatrix,</span>
+<span id="cb26-427"><a href="#cb26-427" aria-hidden="true" tabindex="-1"></a>                 <span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-428"><a href="#cb26-428" aria-hidden="true" tabindex="-1"></a>                 <span class="at">cor_method =</span> <span class="st">"pearson"</span>,</span>
+<span id="cb26-429"><a href="#cb26-429" aria-hidden="true" tabindex="-1"></a>                 <span class="at">permutations =</span> <span class="dv">999</span>,</span>
+<span id="cb26-430"><a href="#cb26-430" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dist_method =</span> <span class="st">"gower"</span>,</span>
+<span id="cb26-431"><a href="#cb26-431" aria-hidden="true" tabindex="-1"></a>                 <span class="at">geo_dist_method =</span> <span class="st">"euclidean"</span>,</span>
+<span id="cb26-432"><a href="#cb26-432" aria-hidden="true" tabindex="-1"></a>                 <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb26-433"><a href="#cb26-433" aria-hidden="true" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-434"><a href="#cb26-434" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-435"><a href="#cb26-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-436"><a href="#cb26-436" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`dist_method`** — dissimilarity metric for the morphological distance matrix.</span>
+<span id="cb26-437"><a href="#cb26-437" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`geo_dist_method`** — distance metric for geographic coordinates.</span>
+<span id="cb26-438"><a href="#cb26-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-439"><a href="#cb26-439" aria-hidden="true" tabindex="-1"></a><span class="fu">### morph_autocorrelation()</span></span>
+<span id="cb26-440"><a href="#cb26-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-441"><a href="#cb26-441" aria-hidden="true" tabindex="-1"></a>Tests each trait for lag-1 spatial autocorrelation along an ordering of the specimens (by latitude, longitude, or original row order), producing per-block plots and a summary table.</span>
+<span id="cb26-442"><a href="#cb26-442" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-443"><a href="#cb26-443" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-444"><a href="#cb26-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-445"><a href="#cb26-445" aria-hidden="true" tabindex="-1"></a><span class="fu">morph_autocorrelation</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-446"><a href="#cb26-446" aria-hidden="true" tabindex="-1"></a>                      <span class="at">geodata =</span> geomatrix,</span>
+<span id="cb26-447"><a href="#cb26-447" aria-hidden="true" tabindex="-1"></a>                      <span class="at">blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-448"><a href="#cb26-448" aria-hidden="true" tabindex="-1"></a>                      <span class="at">cor_method =</span> <span class="st">"pearson"</span>,</span>
+<span id="cb26-449"><a href="#cb26-449" aria-hidden="true" tabindex="-1"></a>                      <span class="at">order_by =</span> <span class="st">"latitude"</span>,</span>
+<span id="cb26-450"><a href="#cb26-450" aria-hidden="true" tabindex="-1"></a>                      <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb26-451"><a href="#cb26-451" aria-hidden="true" tabindex="-1"></a>                      <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-452"><a href="#cb26-452" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-453"><a href="#cb26-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-454"><a href="#cb26-454" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`order_by`** — how specimens are ordered before computing the lag-1 autocorrelation: <span class="in">`"latitude"`</span>, <span class="in">`"longitude"`</span>, or <span class="in">`"none"`</span> (keeps original row order).</span>
+<span id="cb26-455"><a href="#cb26-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-456"><a href="#cb26-456" aria-hidden="true" tabindex="-1"></a><span class="fu">### geo_morph_rda()</span></span>
+<span id="cb26-457"><a href="#cb26-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-458"><a href="#cb26-458" aria-hidden="true" tabindex="-1"></a>Redundancy Analysis constraining morphological traits by bioclimatic variables, run per trait block, after dropping redundant environmental variables above a correlation threshold.</span>
+<span id="cb26-459"><a href="#cb26-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-460"><a href="#cb26-460" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-461"><a href="#cb26-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-462"><a href="#cb26-462" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_morph_rda</span>(<span class="at">analysis_data =</span> morphmatrix,</span>
+<span id="cb26-463"><a href="#cb26-463" aria-hidden="true" tabindex="-1"></a>              <span class="at">geodata =</span> geomatrix,</span>
+<span id="cb26-464"><a href="#cb26-464" aria-hidden="true" tabindex="-1"></a>              <span class="at">blocks =</span> <span class="st">"all"</span>,</span>
+<span id="cb26-465"><a href="#cb26-465" aria-hidden="true" tabindex="-1"></a>              <span class="at">env_vars =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-466"><a href="#cb26-466" aria-hidden="true" tabindex="-1"></a>              <span class="at">permutations =</span> <span class="dv">999</span>,</span>
+<span id="cb26-467"><a href="#cb26-467" aria-hidden="true" tabindex="-1"></a>              <span class="at">scale_data =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-468"><a href="#cb26-468" aria-hidden="true" tabindex="-1"></a>              <span class="at">env_cor_threshold =</span> <span class="fl">0.95</span>,</span>
+<span id="cb26-469"><a href="#cb26-469" aria-hidden="true" tabindex="-1"></a>              <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb26-470"><a href="#cb26-470" aria-hidden="true" tabindex="-1"></a>              <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-471"><a href="#cb26-471" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-472"><a href="#cb26-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-473"><a href="#cb26-473" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`env_vars`** — environmental variables to use as constraints; <span class="in">`NULL`</span> auto-selects all <span class="in">`bio*`</span> columns.</span>
+<span id="cb26-474"><a href="#cb26-474" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`scale_data`** — whether to standardize morphological and environmental data before fitting.</span>
+<span id="cb26-475"><a href="#cb26-475" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`env_cor_threshold`** — correlation cutoff above which redundant environmental variables are dropped before the analysis.</span>
+<span id="cb26-476"><a href="#cb26-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-477"><a href="#cb26-477" aria-hidden="true" tabindex="-1"></a><span class="fu">### geo_enm()</span></span>
+<span id="cb26-478"><a href="#cb26-478" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-479"><a href="#cb26-479" aria-hidden="true" tabindex="-1"></a>Ecological Niche Modelling: fits a presence/background model per taxon (with a spatial buffer, cross-validation folds, and permutation-based variable importance), optionally mapped with country/state borders.</span>
+<span id="cb26-480"><a href="#cb26-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-481"><a href="#cb26-481" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-482"><a href="#cb26-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-483"><a href="#cb26-483" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_enm</span>(<span class="at">geodata =</span> geomatrix,</span>
+<span id="cb26-484"><a href="#cb26-484" aria-hidden="true" tabindex="-1"></a>        <span class="at">buffer_km =</span> <span class="dv">100</span>,</span>
+<span id="cb26-485"><a href="#cb26-485" aria-hidden="true" tabindex="-1"></a>        <span class="at">pa_ratio =</span> <span class="dv">2</span>,</span>
+<span id="cb26-486"><a href="#cb26-486" aria-hidden="true" tabindex="-1"></a>        <span class="at">folds =</span> <span class="dv">5</span>,</span>
+<span id="cb26-487"><a href="#cb26-487" aria-hidden="true" tabindex="-1"></a>        <span class="at">min_occ =</span> <span class="dv">3</span>,</span>
+<span id="cb26-488"><a href="#cb26-488" aria-hidden="true" tabindex="-1"></a>        <span class="at">importance_perm =</span> <span class="dv">10</span>,</span>
+<span id="cb26-489"><a href="#cb26-489" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb26-490"><a href="#cb26-490" aria-hidden="true" tabindex="-1"></a>        <span class="at">show_country_states =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-491"><a href="#cb26-491" aria-hidden="true" tabindex="-1"></a>        <span class="at">inset =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-492"><a href="#cb26-492" aria-hidden="true" tabindex="-1"></a>        <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-493"><a href="#cb26-493" aria-hidden="true" tabindex="-1"></a>        <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb26-494"><a href="#cb26-494" aria-hidden="true" tabindex="-1"></a>        <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-495"><a href="#cb26-495" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-496"><a href="#cb26-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-497"><a href="#cb26-497" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`buffer_km`** — radius (km) around occurrences used to define the background/pseudo-absence area.</span>
+<span id="cb26-498"><a href="#cb26-498" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`pa_ratio`** — ratio of background/pseudo-absence points to presence points.</span>
+<span id="cb26-499"><a href="#cb26-499" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`folds`** — number of cross-validation folds.</span>
+<span id="cb26-500"><a href="#cb26-500" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`min_occ`** — minimum number of occurrences required to model a taxon.</span>
+<span id="cb26-501"><a href="#cb26-501" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`importance_perm`** — number of permutations used to estimate variable importance.</span>
+<span id="cb26-502"><a href="#cb26-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-503"><a href="#cb26-503" aria-hidden="true" tabindex="-1"></a><span class="fu">### geo_niche_overlap()</span></span>
+<span id="cb26-504"><a href="#cb26-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-505"><a href="#cb26-505" aria-hidden="true" tabindex="-1"></a>Quantifies niche overlap between taxa in environmental space (e.g. Schoener's D-type metrics), with a similarity/equivalence test based on randomization.</span>
+<span id="cb26-506"><a href="#cb26-506" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-507"><a href="#cb26-507" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval = FALSE}</span></span>
+<span id="cb26-508"><a href="#cb26-508" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-509"><a href="#cb26-509" aria-hidden="true" tabindex="-1"></a><span class="fu">geo_niche_overlap</span>(<span class="at">geodata =</span> geomatrix,</span>
+<span id="cb26-510"><a href="#cb26-510" aria-hidden="true" tabindex="-1"></a>                  <span class="at">var_threshold =</span> <span class="fl">0.95</span>,</span>
+<span id="cb26-511"><a href="#cb26-511" aria-hidden="true" tabindex="-1"></a>                  <span class="at">cor_cutoff =</span> <span class="fl">0.8</span>,</span>
+<span id="cb26-512"><a href="#cb26-512" aria-hidden="true" tabindex="-1"></a>                  <span class="at">grid_size =</span> <span class="dv">100</span>,</span>
+<span id="cb26-513"><a href="#cb26-513" aria-hidden="true" tabindex="-1"></a>                  <span class="at">iterations =</span> <span class="dv">1000</span>,</span>
+<span id="cb26-514"><a href="#cb26-514" aria-hidden="true" tabindex="-1"></a>                  <span class="at">alpha =</span> <span class="fl">0.05</span>,</span>
+<span id="cb26-515"><a href="#cb26-515" aria-hidden="true" tabindex="-1"></a>                  <span class="at">min_occ =</span> <span class="dv">3</span>,</span>
+<span id="cb26-516"><a href="#cb26-516" aria-hidden="true" tabindex="-1"></a>                  <span class="at">n_cores =</span> <span class="dv">1</span>,</span>
+<span id="cb26-517"><a href="#cb26-517" aria-hidden="true" tabindex="-1"></a>                  <span class="at">seed =</span> <span class="dv">123</span>,</span>
+<span id="cb26-518"><a href="#cb26-518" aria-hidden="true" tabindex="-1"></a>                  <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-519"><a href="#cb26-519" aria-hidden="true" tabindex="-1"></a>                  <span class="at">file_formats =</span> <span class="st">"jpg"</span>,</span>
+<span id="cb26-520"><a href="#cb26-520" aria-hidden="true" tabindex="-1"></a>                  <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-521"><a href="#cb26-521" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-522"><a href="#cb26-522" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-523"><a href="#cb26-523" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`var_threshold`** — variance-explained threshold used when reducing environmental variables (e.g. via PCA) before building the niche space.</span>
+<span id="cb26-524"><a href="#cb26-524" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`cor_cutoff`** — correlation cutoff for dropping redundant environmental variables.</span>
+<span id="cb26-525"><a href="#cb26-525" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`grid_size`** — resolution of the environmental-space grid used to estimate niche overlap.</span>
+<span id="cb26-526"><a href="#cb26-526" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`iterations`** — number of randomizations for the overlap significance test.</span>
+<span id="cb26-527"><a href="#cb26-527" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`n_cores`** — number of cores used for parallel computation.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>moRphoTaxa — DBOSlab, Jardim Botânico do Rio de Janeiro</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/DBOSlab/moRphoTaxa">
+      <i class="bi bi-github" role="img" aria-label="moRphoTaxa GitHub">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

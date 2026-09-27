@@ -1,0 +1,158 @@
+---
+format:
+  html:
+    toc: true
+    page-layout: custom
+execute:
+  echo: false
+  eval: false
+  freeze: auto
+  cache: false
+  warning: false
+  message: false
+  include: true
+  # ENABLE inline R code evaluation
+  inline: true
+---
+
+<div class="floating-logos">
+
+  <a href="https://github.com/DBOSlab/moRphoTaxa"
+     target="_blank"
+     title="moRphoTaxa on GitHub">
+    <img src="/figures/moRphoTaxa_hex_sticker.png"
+         alt="moRphoTaxa logo">
+  </a>
+  
+  <a href="https://www.gov.br/jbrj/pt-br"
+     target="_blank"
+     title="Jardim Botânico do Rio de Janeiro">
+    <img src="/figures/jbrj_marca.png"
+         alt="Jardim Botânico do Rio de Janeiro">
+  </a>
+
+</div>
+
+::: whitebox
+::: {style="padding-left: 100px; padding-right: 50px; display: inline-block;"}
+
+::: {layout-ncol="2"}
+
+::: {style="text-align: left;"}
+
+# moRphoTaxa
+
+`moRphoTaxa` is both an **R package** — a documented, exported collection of functions for trait-matrix construction and morphometric/ecogeographic analysis — and the **fully reproducible analytical pipeline** built on top of it. Together they support morphometric and bioclimatic analysis of plant groups, connecting herbarium specimen retrieval, standardized morphometric matrix construction, multivariate analysis, and bioclimatic-space inference into a single automated workflow. Every stage of the pipeline is a thin, scripted layer over `moRphoTaxa` functions, so the same functions used here can also be called directly in any R session once the package is installed.
+
+Originally developed and calibrated using Amazonian Papilionoideae species complexes, the system is modular, transferable, and designed to scale across plant families or study systems with minimal adjustments. The workflow requires basic familiarity with R but does not demand advanced programming expertise.
+
+---
+
+## What this pipeline does
+
+`moRphoTaxa` operationalizes integrative morphometric taxonomy within a fully reproducible R framework, combining the `moRphoTaxa` package's functions with a scripted pipeline that chains them together. The pipeline executes the complete analytical workflow, from large-scale herbarium data acquisition and standardized occurrence-data harmonization to automated trait-matrix construction, multivariate morphometric inference, and bioclimatic-space analysis, enabling objective detection of phenetic structure, statistically supported morphogroups, and environmentally structured lineages within a unified analytical system.
+
+The pipeline performs:
+
+- Automated herbarium record acquisition from multiple repositories  
+- Standardized harmonization of occurrence datasets  
+- Scripted generation of morphometric matrix presets, via `moRphoTaxa` functions such as `morph_add_traits()`
+- Multivariate morphometric analyses (e.g., PCA, clustering), via `moRphoTaxa` functions such as `morph_pca()` and `morph_kmeans()`
+- Bioclimatic-space extraction and ordination (e.g., NMDS), via `moRphoTaxa` functions such as `geo_matrix_setting()` and `morph_nmds()`
+- Generation of reproducible analytical outputs  
+
+---
+
+## Why this pipeline exists
+
+Species delimitation in recently diverged lineages and species complexes is often constrained by:
+
+- Overlapping morphological characters  
+- Weak or multidimensional phenetic structure  
+- Partial ecological divergence  
+
+Despite the availability of large herbarium datasets, workflows for integrative morphometrics remain fragmented, manually assembled, and difficult to reproduce. `moRphoTaxa` addresses this limitation by providing a standardized, scripted analytical infrastructure — an R package of documented functions plus the pipeline that sequences them — that connects specimen-based data to quantitative inference in a transparent, repeatable and scalable manner.
+
+---
+
+## Design Principles
+
+`moRphoTaxa` was built around five core principles:
+
+- **Reproducibility** — fully scripted and version-controlled workflow, backed by a documented, exported R package  
+- **Transparency** — traceable transformation from raw data to inference  
+- **Modularity** — independent yet interoperable components, each corresponding to one or more `moRphoTaxa` functions  
+- **Transferability** — adaptable across plant families  
+- **Scalability** — suitable for megadiverse systems  
+
+---
+
+## Core Workflow
+
+The pipeline is organized into four integrated modules, each drawing on a dedicated set of `moRphoTaxa` package functions:
+
+### 1. Get Herbarium Data
+
+- Multi-taxon querying  
+- Automated retrieval from major biodiversity repositories (e.g., **REFLORA**, **JABOT**, **speciesLink**, and **GBIF**)  
+- Source tracking and metadata preservation  
+
+This module establishes a comprehensive and reproducible specimen foundation.
+
+---
+
+### 2. Clean Occurrence Data
+
+- Standardization of Darwin Core-style fields  
+- Filtering out incomplete occurrence records (e.g. unvouchered materials)
+- Duplicate detection 
+- Harmonization of core occurrence metadata (e.g., collector name, collection number)
+- Geographic consistency checks  
+
+This stage ensures analytical stability by producing a curated dataset before morphometric inference.
+
+---
+
+### 3. Add Morphological Traits
+
+- Predefined quantitative and qualitative trait templates, built into the `moRphoTaxa` package via `morph_add_traits()`  
+- Group-specific presets (e.g., Papilionoideae, Asteraceae, Passifloraceae, and other angiosperm and non-angiosperm structures)
+- Phenological state–specific schemas
+- Structured linkage between specimens and characters  
+- Analysis-ready matrix architecture  
+
+By enforcing consistency in character definition and matrix architecture, the package's trait-building functions produce a fully structured matrix ready for measure compilation, optimizing the overall construction workflow.
+
+---
+
+### 4. Morphometric and Ecogeographic Inference
+
+- Principal Component Analysis (PCA) and other ordination methods (PCoA, NMDS), via the package's `morph_pca()`, `morph_pcoa()`, and `morph_nmds()` functions
+- K-means clustering, mixture-model clustering, and group detection, via `morph_kmeans()` and `morph_nmm()`
+- Confirmatory statistics (ANOVA, PERMANOVA, Kruskal–Wallis, LDA, CVA, DAPC) to test and visualize group differences
+- Sensitivity and structure assessment
+- Generate boxplots and additional graphical outputs to visualize analytical results, via `morph_boxplots()` and related functions
+- Bioclimatic and edaphic data extraction, and ordination in environmental space, via `geo_matrix_setting()` and associated `geo_*()` functions
+
+This analytical layer identifies phenetic discontinuities and assesses ecological differentiation among inferred groups, displaying the results in informative graphical outputs (e.g., boxplots).
+
+---
+
+## Getting Started
+
+To run `moRphoTaxa`:
+
+1. Install the `moRphoTaxa` package (e.g., `devtools::install_github("DBOSlab/moRphoTaxa")`) — the pipeline calls its functions at every step.
+2. Navigate through the sections corresponding to each pipeline module.  
+3. Carefully read the instructions and methodological notes provided in each page.  
+4. Copy and execute the R code blocks directly in your R environment (RStudio recommended).  
+5. Follow the workflow sequentially, as later modules depend on outputs generated in previous steps.  
+
+Each stage of the pipeline is documented using executable Quarto files. The complete project archive, including all scripts, functions, templates, and example datasets, will be publicly available on the project’s GitHub repository, enabling version control, reuse, and long-term accessibility.
+
+:::
+::: {style="display: flex; gap: 16px; justify-content: center; align-items: center;"}
+:::
+:::
+:::
+:::

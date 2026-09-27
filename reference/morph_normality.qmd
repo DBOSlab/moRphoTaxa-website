@@ -1,0 +1,100 @@
+---
+title: 'morph_normality'
+description: 'Assess normality of morphological traits'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::morph_normality()
+```
+
+### Description
+
+Performs trait-wise Shapiro-Wilk normality tests on a morphometric data
+matrix and generates tabular and graphical summaries for downstream
+statistical analyses.
+
+The function is designed to work directly with the `analysis_data` object
+returned by `morph_matrix_setting()`, reading the trait blocks from its
+`"base_cols"` attribute automatically.
+
+### Details
+
+For each morphological trait, `normality()` removes missing values and
+performs a Shapiro-Wilk test of normality.
+
+Traits with fewer than three non-missing observations are skipped. Because
+`stats::shapiro.test()` accepts at most 5000 observations, traits with more
+than 5000 non-missing values are tested using a random sample of 5000
+observations.
+
+A trait is classified as approximately normally distributed when its
+Shapiro-Wilk p-value is greater than or equal to `norm_alpha`. Based on this
+classification, the output includes a simple downstream recommendation:
+
+- `"ANOVA"` for traits classified as normal;
+- `"Kruskal-Wallis"` for traits classified as non-normal.
+
+These recommendations are intended as exploratory guidance only. Selection
+of an inferential test should also consider the study design, independence
+of observations, homogeneity of variance, sample size, and other model
+assumptions.
+
+The function generates an output directory named `Figs_Normality` with a
+date-specific subdirectory. The following files are created:
+
+- a summary bar plot of Shapiro-Wilk p-values in the formats selected by `file_formats`;
+- an Excel table containing the normality results;
+- an Excel file combining all normality results;
+- optionally, one Q-Q plot per trait in a `QQ_plots` subdirectory, using the formats selected by `file_formats`.
+
+At present, all traits listed in `base_cols` are combined into a single
+analysis block named `"all traits"`. Trait blocks are read from `attr(analysis_data, "base_cols")`, which
+`morph_matrix_setting()` attaches automatically. If `analysis_data` lacks
+this attribute, the function stops with an informative error.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| analysis_data | A numeric data frame or matrix containing morphological traits as columns and specimens as rows. Typically obtained from the `analysis_data` element returned by `morph_matrix_setting()`. |
+| norm_alpha | Numeric. Significance threshold used to classify traits according to the Shapiro-Wilk test. Traits with p-values greater than or equal to this value are classified as normal. Default is `0.05`. |
+| norm_qq | Logical. Controls whether individual Q-Q plots are generated for each tested trait. Default is `TRUE`. |
+| file_formats | Character vector specifying which image formats to save. One or more of `"pdf"` and `"jpeg"`. Default is `c("pdf", "jpeg")`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages and output information to the console. |
+
+### Value
+
+Invisibly returns `NULL`.
+
+The function is primarily called for its side effects: it performs
+normality tests, prints summaries to the console, and writes figures and
+Excel files to disk.
+
+### Examples
+
+```r
+# Build the morphometric matrix
+res <- morph_matrix_setting(
+  xlsx_path = "output_data/all_data.xlsx",
+  taxon_col = "taxon",
+  species_selected = NULL,
+  trait_name_type = "code",
+  veg_first = "petiole_length/PETIlng",
+  flo_first = "inflorescence_length/INFLlng",
+  fru_first = "fruit_stipe_length/FRSTlng"
+)
+
+# Assess normality of all morphological traits
+morph_normality(
+  analysis_data = res,
+  norm_alpha = 0.05,
+  norm_qq = TRUE,
+  verbose = TRUE
+)
+```
+
+

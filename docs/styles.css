@@ -1,0 +1,116 @@
+/* moRphoTaxa website — shared styles
+   Palette: spacelab grays (#f8f9fa, #e9ecef, #dee2e6, #6c757d) with the
+   greens of the moRphoTaxa hex sticker (#1e5631, #3b7a3a, #e4efdc). */
+
+@media (min-width: 991.98px) {
+  #quarto-header {
+    border-bottom: 1px solid #dee2e6;
+  }
+}
+
+.navbar-brand > img {
+  max-height: 36px;
+}
+
+/* ---- Home page: floating logos ----------------------------------------- */
+
+/* The home page is a two-column layout whose right column is left empty
+   for these logos: centre them in that column (75% of the viewport minus
+   half their width), so they stay clear of the text at any screen width. */
+.floating-logos {
+  position: fixed;
+  top: 80px;
+  left: calc(75% - 82px);
+  width: 165px;
+  opacity: 0.85;
+  z-index: 1;
+}
+
+.floating-logos img {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  border-radius: 4px;
+}
+
+/* Below this width the text column no longer leaves room beside it
+   (the logos would overlap the text), so they are hidden */
+@media (max-width: 991.98px) {
+  .floating-logos {
+    display: none;
+  }
+}
+
+/* ---- Workflow diagram --------------------------------------------------- */
+
+.workflow-figure {
+  margin: 1.5rem 0 2rem;
+}
+
+.workflow-figure img {
+  width: 100%;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* ---- Pipeline overview: step cards -------------------------------------- */
+
+.pipeline-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 767.98px) {
+  .pipeline-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pipeline-step {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-left: 4px solid #3b7a3a;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+.pipeline-step h3 {
+  margin-top: 0;
+  font-size: 1.15rem;
+  color: #1e5631;
+  border-bottom: none;
+}
+
+.pipeline-step p:last-child {
+  margin-bottom: 0;
+}
+
+.pipeline-step a {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* ---- Dark mode ---------------------------------------------------------- */
+/* Quarto adds .quarto-dark to <body> when the dark theme is active. */
+
+.quarto-dark .pipeline-step {
+  background: #242424;
+  border-color: #3a3a3a;
+  border-left-color: #6fa85a;
+}
+
+.quarto-dark .pipeline-step h3 {
+  color: #9cc283;
+}
+
+.quarto-dark .workflow-figure img {
+  border-color: #3a3a3a;
+}
+
+/* Author cards (styled in authors/index.qmd) use a light background */
+.quarto-dark .author-card {
+  background: #242424;
+}

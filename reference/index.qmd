@@ -1,0 +1,83 @@
+---
+title: "Function Reference"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+<style>
+  body {
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    z-index: -1;
+  }
+</style>
+
+## moRphoTaxa
+
+- [`fill_missing_traits()`](/reference/fill_missing_traits.qmd)
+
+- [`geo_bioclim_exploratory()`](/reference/geo_bioclim_exploratory.qmd)
+
+- [`geo_bioclim_maps()`](/reference/geo_bioclim_maps.qmd)
+
+- [`geo_enm()`](/reference/geo_enm.qmd)
+
+- [`geo_matrix_setting()`](/reference/geo_matrix_setting.qmd)
+
+- [`geo_morph_mantel()`](/reference/geo_morph_mantel.qmd)
+
+- [`geo_morph_rda()`](/reference/geo_morph_rda.qmd)
+
+- [`geo_niche_overlap()`](/reference/geo_niche_overlap.qmd)
+
+- [`morph_add_traits()`](/reference/morph_add_traits.qmd)
+
+- [`morph_anova()`](/reference/morph_anova.qmd)
+
+- [`morph_autocorrelation()`](/reference/morph_autocorrelation.qmd)
+
+- [`morph_boxplots()`](/reference/morph_boxplots.qmd)
+
+- [`morph_cva()`](/reference/morph_cva.qmd)
+
+- [`morph_dapc()`](/reference/morph_dapc.qmd)
+
+- [`morph_dendrogram()`](/reference/morph_dendrogram.qmd)
+
+- [`morph_kmeans()`](/reference/morph_kmeans.qmd)
+
+- [`morph_kruskal()`](/reference/morph_kruskal.qmd)
+
+- [`morph_lda()`](/reference/morph_lda.qmd)
+
+- [`morph_matrix_setting()`](/reference/morph_matrix_setting.qmd)
+
+- [`morph_nmds()`](/reference/morph_nmds.qmd)
+
+- [`morph_nmm()`](/reference/morph_nmm.qmd)
+
+- [`morph_normality()`](/reference/morph_normality.qmd)
+
+- [`morph_pca()`](/reference/morph_pca.qmd)
+
+- [`morph_pcoa()`](/reference/morph_pcoa.qmd)
+
+- [`morph_permanova()`](/reference/morph_permanova.qmd)
+
+- [`morph_similarity()`](/reference/morph_similarity.qmd)
+
+

@@ -1,0 +1,161 @@
+---
+title: 'morph_kmeans'
+description: 'K-means clustering on PCA scores of morphological trait blocks'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::morph_kmeans()
+```
+
+### Description
+
+Performs principal component analysis (PCA) on morphological trait blocks
+and applies K-means clustering to the resulting principal component scores,
+generating a standard set of diagnostic figures for each trait block
+analyzed. The function is designed to work directly on the objects produced
+by `morph_matrix_setting()`.
+
+For each requested trait block, the function fits a PCA, determines the
+number of clusters (either fixed by the user or estimated automatically via
+the gap statistic), runs K-means on the selected principal components, saves
+a cluster plot in which point fill encodes taxon identity and dashed
+ellipses encode cluster membership, saves an equivalent
+factoextra cluster plot, and — when the number of clusters is
+estimated — saves an elbow plot of the within-cluster sum of squares.
+
+### Details
+
+`morph_kmeans()` expects `analysis_data` as produced by
+`morph_matrix_setting()`: a numeric data frame with `id` and `taxon`
+columns plus one column per morphological trait, with specimen IDs as row
+names. The trait blocks (`"veg"`, `"flo"`, `"fru"`, or any subset thereof)
+are not passed in separately — they are read directly from the
+`"base_cols"` attribute that `morph_matrix_setting()` attaches to
+`analysis_data`. If `analysis_data` has no `"base_cols"` attribute (e.g.
+it was not built with `morph_matrix_setting()`, or the attribute was
+dropped by an intervening subsetting operation), the function stops with an
+informative error.
+
+The `kmeans_blocks` argument controls which trait sets are analyzed:
+
+- `"all"`: runs K-means on each individual block in `base_cols` (typically `"veg"`, `"flo"`, `"fru"`), as well as on every pairwise and full combination of these blocks (`"vegflo"`, `"vegfru"`, `"flofru"`, `"vegflofru"`). Combinations whose source blocks are absent from `base_cols` are silently skipped;
+- a character vector naming one or more blocks in `base_cols`: runs K-means only on the requested block(s), individually.
+
+For each trait block, rows with missing values in the relevant columns are
+removed via `stats::na.omit()`, and traits with zero variance (constant
+across the retained specimens) are dropped, since they cannot contribute to
+a correlation-based PCA. Blocks with fewer than 3 specimens or fewer than 2
+traits after these filtering steps are skipped with a warning, as are blocks
+in which any of the components requested in `kmeans_pcs` is unavailable.
+
+PCA is fit with `stats::prcomp()` using `scale. = TRUE` (i.e., on the
+correlation matrix), matching `morph_pca()`. Clustering is then performed
+with `stats::kmeans()` on the columns named in `kmeans_pcs` only.
+
+The number of clusters is resolved as follows:
+
+- if `kmeans_k` is a number, that value is used directly for every block;
+- if `kmeans_k` is `NULL` (default), the gap statistic is computed with `cluster::clusGap()` over `1:kmeans_k_max` clusters using `kmeans_B` bootstrap replicates, and the number of clusters maximizing the gap is retained, constrained to at least 2. Within each block, `kmeans_k_max` is additionally capped at `nrow - 1` so that the gap statistic remains computable in small blocks.
+
+Cluster estimation and fitting are randomized; `kmeans_seed` is passed to
+`set.seed()` before each block is processed, so that repeated calls with
+the same data and arguments return identical cluster assignments.
+
+Taxon colours are taken from the `"taxon_colors"` attribute attached to
+`analysis_data` by `morph_matrix_setting()`, so that each taxon keeps the
+same colour used in other plots (e.g. `morph_pca()`, `morph_boxplots()`).
+If this attribute is missing, or lacks an entry for a taxon present in a
+given block, colours are generated automatically from the `viridis` palette
+for the affected taxa, with a warning. Cluster ellipses are drawn in
+greyscale so that taxon identity (fill) and cluster membership (outline)
+remain visually distinguishable; ellipses are drawn only for clusters with
+at least 4 specimens, since `ggplot2::stat_ellipse()` cannot be estimated
+from fewer points.
+
+For each analyzed block, the following figures are generated:
+
+- a K-means cluster plot on the first two components listed in `kmeans_pcs`, with points filled by taxon and dashed t-distribution ellipses per cluster, and axis labels reporting the proportion of variance explained by each component;
+- an equivalent cluster plot produced by `factoextra::fviz_cluster()`;
+- an elbow plot of the within-cluster sum of squares against the number of clusters, with the retained number of clusters marked — only when `kmeans_k` is `NULL`.
+
+Output files are written to a date-specific directory inside `Figs.KMeans`.
+Each figure is saved in the formats specified by `file_formats`. File names
+are prefixed by figure type (e.g. `"KMeans_plot_"`, `"KMeans_fviz_"`,
+`"KMeans_elbow_"`) and suffixed by the trait block name.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| analysis_data | A numeric data frame containing morphological traits as columns and specimens as rows, with `id` and `taxon` columns and specimen identifiers as row names. Typically the object returned by `morph_matrix_setting()`. If it carries a `"taxon_colors"` attribute, those colours are reused; otherwise a `viridis` palette is generated automatically. |
+| kmeans_blocks | Character. Either `"all"`, to cluster every individual block in `base_cols` plus all pairwise and full combinations of these blocks, or a character vector naming one or more blocks in `base_cols` to analyze individually. Default is `"all"`. |
+| kmeans_k | Integer or `NULL`. Fixed number of clusters. If `NULL` (default), the number of clusters is estimated for each block from the gap statistic. |
+| kmeans_k_max | Integer. Maximum number of clusters evaluated when `kmeans_k` is `NULL`. Default is `10`. Capped internally at `nrow - 1` within each block. |
+| kmeans_B | Integer. Number of bootstrap replicates used by `cluster::clusGap()` when estimating the number of clusters. Default is `50`. |
+| kmeans_nstart | Integer. Number of random starting configurations passed to `stats::kmeans()`. Default is `25`. |
+| kmeans_pcs | Character vector naming the principal components used for clustering, e.g. `c("PC1", "PC2")` (default). At least two components must be given; the first two are also the axes of the cluster plots. |
+| kmeans_seed | Integer. Random seed applied before clustering each block, for reproducible cluster assignments. Default is `123`. |
+| file_formats | Character vector specifying which image formats to save. One or more of `"pdf"` and `"jpeg"`. Default is `c("pdf", "jpeg")`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages, per-block cluster summaries, skipped blocks, and the output directory to the console. |
+
+### Value
+
+Invisibly returns a data frame of cluster assignments with one row per
+specimen per analyzed block, or `NULL` if no block could be analyzed. The
+columns are:
+
+`block`Name of the trait block.
+`id`Specimen identifier.
+`taxon`Taxon assigned to the specimen.
+`cluster`Cluster assigned by K-means, as a factor.
+`optimal_k`Number of clusters used for that block.
+
+The function is also called for its side effects: cluster plots, and
+(when applicable) elbow plots, are written to disk for each analyzed trait
+block.
+
+### Examples
+
+```r
+# Build the morphometric matrix
+res <- morph_matrix_setting(
+  xlsx_path = "output_data/all_data.xlsx",
+  taxon_col = "taxon",
+  trait_name_type = "code",
+  veg_first = "petiole_length/PETIlng",
+  flo_first = "inflorescence_length/INFLlng",
+  fru_first = "fruit_stipe_length/FRSTlng"
+)
+
+# Cluster every individual block and every block combination,
+# estimating the number of clusters from the gap statistic
+km <- morph_kmeans(
+  analysis_data = res,
+  kmeans_blocks = "all"
+)
+
+# Inspect the cluster assignments
+head(km)
+table(km$block, km$cluster)
+
+# Cluster the vegetative block only, with a fixed number of clusters
+morph_kmeans(
+  analysis_data = res,
+  kmeans_blocks = "veg",
+  kmeans_k = 3
+)
+
+# Cluster on the first three components, saving PDF output only
+morph_kmeans(
+  analysis_data = res,
+  kmeans_blocks = c("veg", "flo"),
+  kmeans_pcs = c("PC1", "PC2", "PC3"),
+  file_formats = "pdf"
+)
+```
+
+

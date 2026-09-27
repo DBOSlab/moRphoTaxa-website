@@ -1,0 +1,165 @@
+---
+title: 'morph_nmm'
+description: 'Model-based clustering of morphological trait blocks with normal mixture models'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::morph_nmm()
+```
+
+### Description
+
+Fits normal mixture models (NMM) to morphological trait blocks derived from
+a morphometric matrix, and generates a standard set of diagnostic figures
+and tables for each trait block analyzed. The function is designed to work
+directly on the objects produced by `morph_matrix_setting()`.
+
+For each requested trait block, the function fits a PCA to rank traits by
+their contribution to the first principal component, retains the top
+contributing traits, fits a Gaussian mixture model with
+`mclust::Mclust()` — which selects both the covariance structure and the
+number of components by BIC — and saves a BIC plot, a classification plot,
+an uncertainty plot, and a spreadsheet of group assignments.
+
+### Details
+
+`morph_nmm()` expects `analysis_data` as produced by
+`morph_matrix_setting()`: a numeric data frame with `id` and `taxon`
+columns plus one column per morphological trait, with specimen IDs as row
+names. The trait blocks (`"veg"`, `"flo"`, `"fru"`, or any subset thereof)
+are not passed in separately — they are read directly from the
+`"base_cols"` attribute that `morph_matrix_setting()` attaches to
+`analysis_data`. If `analysis_data` has no `"base_cols"` attribute (e.g.
+it was not built with `morph_matrix_setting()`, or the attribute was
+dropped by an intervening subsetting operation), the function stops with an
+informative error.
+
+The `nmm_blocks` argument controls which trait sets are analyzed:
+
+- `"all"`: runs NMM on each individual block in `base_cols` (typically `"veg"`, `"flo"`, `"fru"`), as well as on every pairwise and full combination of these blocks (`"vegflo"`, `"vegfru"`, `"flofru"`, `"vegflofru"`). Combinations whose source blocks are absent from `base_cols` are silently skipped;
+- a character vector naming one or more blocks in `base_cols`: runs NMM only on the requested block(s), individually.
+
+Within each block, rows with missing values are removed via
+`stats::na.omit()` and traits with zero variance across the retained
+specimens are dropped, since they cannot contribute to a correlation-based
+PCA nor to a mixture model. Blocks left with fewer than 2 traits, or with
+fewer than `nmm_min_n` complete specimens, are skipped with a warning.
+
+Trait selection is based on PCA: a PCA is fit with `stats::prcomp()` using
+`scale. = TRUE`, the squared loadings on the first principal component are
+rescaled to percentages, and the `nmm_top_traits` highest-contributing
+traits are retained for the mixture model. This step keeps the
+dimensionality of the mixture model manageable relative to the number of
+specimens; note that it is unsupervised and makes no use of the `taxon`
+column, so the resulting groups remain independent of the current
+taxonomic hypothesis.
+
+The mixture model is fit with `mclust::Mclust()`. By default the number of
+components and the covariance parameterization are both selected by BIC
+over the full set of `mclust` models; `nmm_G` and `nmm_model_names`
+restrict that search when a particular number of groups or a particular
+family of models is required. Model fitting is wrapped in `tryCatch()`, so
+a block whose model fails to converge produces a warning and is skipped
+rather than aborting the run. `nmm_seed` is applied before each block for
+reproducibility.
+
+For each analyzed block, the following figures are generated:
+
+- a BIC plot across covariance models and numbers of components (`factoextra::fviz_mclust_bic()`);
+- a classification plot showing specimens projected onto the first two principal components of the retained traits, coloured by mixture component;
+- an uncertainty plot, in which point size reflects the uncertainty of each specimen's assignment.
+
+Confidence ellipses are drawn on the classification and uncertainty plots
+only when more than one component is retained and every component contains
+at least 4 specimens; otherwise the ellipses are suppressed and a message
+is emitted, since they cannot be estimated from fewer points. Both plots
+are additionally wrapped in `tryCatch()`, so a plotting failure does not
+interrupt the block.
+
+Output files are written to a date-specific directory inside `Figs.NMM`.
+Figures are saved in the formats specified by `file_formats`, with names
+prefixed by figure type (`"NMM_BIC_"`, `"NMM_classification_"`,
+`"NMM_uncertainty_"`) and suffixed by the trait block name. When
+`save_xlsx = TRUE`, a per-block spreadsheet (`"NMM_groups_<block>.xlsx"`)
+holding the retained trait values, taxon, assigned group and assignment
+uncertainty for every specimen is written to the same directory, along
+with a single `"NMM_summary.xlsx"` combining the summary rows of all
+analyzed blocks.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| analysis_data | A numeric data frame containing morphological traits as columns and specimens as rows, with `id` and `taxon` columns and specimen identifiers as row names. Typically the object returned by `morph_matrix_setting()`. |
+| nmm_blocks | Character. Either `"all"`, to run NMM on every individual block in `base_cols` plus all pairwise and full combinations of these blocks, or a character vector naming one or more blocks in `base_cols` to analyze individually. Default is `"all"`. |
+| nmm_top_traits | Integer. Number of highest-contributing traits on principal component 1 retained for the mixture model. Default is `10`. If a block contains fewer traits, all of them are used. |
+| nmm_min_n | Integer. Minimum number of complete specimens required to analyze a block. Blocks with fewer specimens, before or after subsetting to the top traits, are skipped with a warning. Default is `10`. |
+| nmm_G | Integer vector giving the numbers of mixture components to evaluate, passed to `mclust::Mclust()`. If `NULL` (default), the `mclust` default range is used and the number of components is selected by BIC. |
+| nmm_model_names | Character vector of `mclust` model names (covariance parameterizations) to evaluate, e.g. `c("EII", "VII", "VVV")`, passed to `mclust::Mclust()`. If `NULL` (default), all applicable models are evaluated. |
+| ellipse_level | Numeric between 0 and 1. Confidence level of the ellipses drawn on the classification plot. Default is `0.4`. |
+| nmm_seed | Integer. Random seed applied before fitting each block, for reproducible results. Default is `123`. |
+| save_xlsx | Logical. If `TRUE` (default), writes a per-block spreadsheet of specimen group assignments and a combined summary spreadsheet to the output directory. |
+| file_formats | Character vector specifying which image formats to save. One or more of `"pdf"` and `"jpeg"`. Default is `c("pdf", "jpeg")`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages, the traits retained per block, per-block model summaries, skipped blocks, and the output directory to the console. |
+
+### Value
+
+Invisibly returns a summary data frame with one row per analyzed block, or
+`NULL` if no block could be analyzed. The columns are:
+
+`block`Name of the trait block.
+`n`Number of specimens entering the mixture model.
+`model`Covariance parameterization selected by `mclust`.
+`k`Number of mixture components retained.
+`bic`BIC of the selected model.
+`top_traits`Retained traits, separated by `"|"`.
+
+The function is also called for its side effects: BIC, classification and
+uncertainty plots, and (when `save_xlsx = TRUE`) spreadsheets of group
+assignments, are written to disk for each analyzed trait block.
+
+### Examples
+
+```r
+# Build the morphometric matrix
+res <- morph_matrix_setting(
+  xlsx_path = "output_data/all_data.xlsx",
+  taxon_col = "taxon",
+  trait_name_type = "code",
+  veg_first = "petiole_length/PETIlng",
+  flo_first = "inflorescence_length/INFLlng",
+  fru_first = "fruit_stipe_length/FRSTlng"
+)
+
+# Fit NMMs to every individual block and every block combination
+nmm <- morph_nmm(
+  analysis_data = res,
+  nmm_blocks = "all"
+)
+
+# Inspect the model selected for each block
+nmm
+
+# Vegetative block only, using the 15 top PC1-contributing traits
+morph_nmm(
+  analysis_data = res,
+  nmm_blocks = "veg",
+  nmm_top_traits = 15
+)
+
+# Restrict the search to 2-4 components, saving PDF output only and
+# skipping the spreadsheets
+morph_nmm(
+  analysis_data = res,
+  nmm_blocks = c("veg", "flo"),
+  nmm_G = 2:4,
+  save_xlsx = FALSE,
+  file_formats = "pdf"
+)
+```
+
+

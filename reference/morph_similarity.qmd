@@ -1,0 +1,111 @@
+---
+title: 'morph_similarity'
+description: 'Pairwise similarity among morphological traits'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::morph_similarity()
+```
+
+### Description
+
+Computes pairwise correlations among all morphological trait pairs within
+one or more trait blocks of a morphometric matrix produced by
+`morph_matrix_setting()`, and exports correlation heatmaps, Excel result
+tables, and, optionally, annotated scatter plots for user-selected trait
+pairs.
+
+### Details
+
+`analysis_data` is expected to be the morphometric matrix returned by
+`morph_matrix_setting()`, i.e. a numeric data frame of specimens (rows) by
+morphological traits (columns), carrying a `"base_cols"` attribute — a
+named list assigning trait columns to the `"veg"`, `"flo"`, and `"fru"`
+structural blocks. This attribute is attached automatically by
+`morph_matrix_setting()`; if `analysis_data` does not carry it, the function
+stops with an informative error.
+
+When `sim_blocks = "all"`, the function runs the analysis on each
+individual block (`"veg"`, `"flo"`, `"fru"`) as well as on every pairwise
+and three-way combination of blocks (`"vegflo"`, `"vegfru"`, `"flofru"`,
+`"vegflofru"`). Alternatively, `sim_blocks` can be a character vector
+naming a subset of the blocks present in `base_cols` (e.g. `c("veg", "flo")`), in which case only those individual blocks are analyzed.
+
+For each block, all pairwise combinations of traits are correlated using
+`stats::cor.test()` with the method given in `sim_method`. Pairs with
+fewer than `sim_min_n` complete (non-`NA`) observations are skipped.
+Resulting p-values are adjusted across all pairs within a block using
+`stats::p.adjust()` with the method given in `sim_p_adjust`, and pairs
+with an adjusted p-value below `sim_alpha` are flagged as significant.
+
+For each block, the function produces:
+
+- a correlation heatmap (PDF and/or JPEG, per `file_formats`);
+- an Excel spreadsheet of pairwise correlation statistics, sorted by absolute correlation strength.
+
+A combined Excel spreadsheet across all analyzed blocks is also written.
+
+If `sim_pairs` is supplied, an annotated scatter plot (with a linear fit,
+correlation coefficient, significance, and sample size) is additionally
+produced for each specified trait pair, regardless of block.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| analysis_data | A numeric data frame of morphological measurements, typically the matrix returned by `morph_matrix_setting()`, carrying a `"base_cols"` attribute (see Details). |
+| sim_blocks | Character. Either `"all"` (default), to analyze every individual block plus all block combinations, or a character vector naming a subset of blocks in `base_cols` (e.g. `"veg"`, `c("veg", "flo")`). |
+| sim_method | Character string giving the correlation method passed to `stats::cor.test()`. One of `"pearson"` (default), `"spearman"`, or `"kendall"`. |
+| sim_p_adjust | Character string giving the p-value adjustment method passed to `stats::p.adjust()` (e.g. `"BH"`, `"bonferroni"`, `"holm"`, `"none"`). Default is `"BH"`. |
+| sim_alpha | Numeric. Adjusted p-value threshold below which a correlation is flagged as significant. Default is `0.05`. |
+| sim_min_n | Integer. Minimum number of complete pairwise observations required to test a trait pair. Pairs with fewer observations are skipped. Default is `5`. |
+| sim_pairs | Optional list of character vectors of length two, each giving the names of two trait columns in `analysis_data` for which an annotated scatter plot should be produced (e.g. `list(c("petiole_length/PETIlng", "rachis_length/RACHlng"))`). If `NULL` (default), only heatmaps are produced. |
+| output_dir | Character string giving the directory where outputs are saved. If `NULL` (default), a folder named `"Figs_Similarity/<DDMonYYYY>"` is created in the working directory, using the current date. |
+| file_formats | Character vector specifying which image formats to save plots in. One or more of `"pdf"`, `"jpeg"`. Default is `c("pdf", "jpeg")`. |
+
+### Value
+
+Invisibly, a named list with three elements:
+
+by_blockA named list of data frames, one per analyzed block, each
+containing the pairwise correlation statistics for that block.
+combinedA single data frame combining the results of all
+analyzed blocks, sorted by absolute correlation strength, or `NULL` if no
+block produced results.
+output_dirThe directory where all outputs were saved.
+
+As a side effect, correlation heatmaps, per-block and combined Excel
+result tables, and (if requested) scatter plots are written to
+`output_dir`.
+
+### Examples
+
+```r
+morph <- morph_matrix_setting(
+  xlsx_path = "morphological_data.xlsx",
+  taxon_col = "species",
+  trait_name_type = "code",
+  veg_first = "petiole_length/PETIlng",
+  flo_first = "inflorescence_length/INFLlng",
+  fru_first = "fruit_stipe_length/FRSTlng"
+)
+
+# Run pairwise similarity across every block and block combination
+sim <- morph_similarity(morph, sim_method = "spearman")
+
+# Restrict to a single block and add a scatter plot for one trait pair
+sim_veg <- morph_similarity(
+  morph,
+  sim_blocks = "veg",
+  sim_pairs  = list(c("petiole_length/PETIlng", "leaf_length/LEAFlng"))
+)
+
+# Inspect combined results
+sim$combined
+```
+
+

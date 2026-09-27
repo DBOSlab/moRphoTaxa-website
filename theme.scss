@@ -1,0 +1,37 @@
+/*-- scss:defaults --*/
+
+// Spacelab sets its own navbar hover colours. Clear them so the navbar uses
+// the theme's link colours instead.
+$navbar-dark-hover-color:       null;
+$navbar-light-hover-color:      null;
+
+
+
+/*-- scss:rules --*/
+
+// Home page intro block (index.qmd)
+.whitebox h1 {
+  font-weight: lighter;
+  font-size: 170%;
+  padding-bottom: 0.5em;
+}
+
+.whitebox h2 {
+  font-weight: lighter;
+  border-bottom-width: 0px;
+}
+
+.whitebox p {
+  font-weight: lighter;
+}
+
+.whitebox a {
+  font-weight: lighter;
+  text-decoration: none;
+}
+
+// Code comments (pandoc highlighting class)
+.co {
+  font-size: .830em;
+  font-weight: 100;
+}

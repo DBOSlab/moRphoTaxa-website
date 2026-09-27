@@ -1,0 +1,42 @@
+---
+title: 'fill_missing_traits'
+description: 'Add random measures for preliminar morphometric analysis'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::fill_missing_traits()
+```
+
+### Description
+
+Creates and associates a data frame of morphological traits for flowering plants
+with species occurrence matrices, including traits specific to selected families.
+The resulting data frame can be exported to a specified directory as a .xlsx file.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| df | A data frame containing species occurrence records, previously loaded from the working directory. If NULL, only the morphological traits data frame is created. |
+| start_col | Character. Choose either "trait full name" to load full trait names or "trait code" to load abbreviated trait codes. |
+
+### Value
+
+A data frame combining occurrence data with the selected morphological traits,
+exported as a .xlsx file.
+
+### Examples
+
+```r
+# Example usage:
+fill_missing_traits(
+  base_df = my_occurrence_data,
+  trait_name = "trait full name",
+  quali_specific = "passifloraceae")
+```
+
+

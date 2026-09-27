@@ -1,0 +1,160 @@
+---
+title: 'geo_bioclim_maps'
+description: 'Map occurrences over a bioclimatic layer and plot them in climate space'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::geo_bioclim_maps()
+```
+
+### Description
+
+Builds a two-panel bioclimatic figure from the geographical/environmental
+matrix produced by `geo_matrix_setting()`: (a) a distribution map in which
+occurrence points are drawn over a WorldClim raster background, optionally
+with sub-national borders, rivers and a locator inset; and (b) a scatter
+plot of the occurrences in the climate space defined by two WorldClim
+variables.
+
+The map extent, the raster cropping and the locator inset are all
+determined automatically from the geographical distribution of the
+occurrence records. The function reuses the climate raster stored in the
+`"clim_stack"` attribute of the `geodata` object, so no WorldClim data are
+downloaded again. Figures are optionally saved as PDF and JPEG, and the
+ggplot2 objects are returned so they can be further customised.
+
+### Details
+
+**Input.** `geodata` must be the data frame returned by
+`geo_matrix_setting()`. It must contain the columns `taxon`,
+`decimalLatitude` and `decimalLongitude`, the climate columns listed in
+`attr(geodata, "env_cols")$clim`, and the `"clim_stack"` attribute
+(a terra::SpatRaster).
+
+**Choosing climate variables.** `bio_map_layer`, `bio_x` and `bio_y`
+accept an integer from `1` to `19` (WorldClim bioclimatic variables
+BIO1-BIO19) or the character string `"elevation"`. Elevation is a separate,
+non-bioclimatic layer: it is *not* "BIO0". Bioclimatic layers are
+matched against the layer names present in the data (both the `"bio_1"`
+and `"bio1"` naming styles are recognised). The reference for the
+variables is:
+
+BIO1  = Annual Mean Temperature       BIO11 = Mean Temp Coldest Quarter
+BIO2  = Mean Diurnal Range            BIO12 = Annual Precipitation
+BIO3  = Isothermality                 BIO13 = Precipitation Wettest Month
+BIO4  = Temperature Seasonality       BIO14 = Precipitation Driest Month
+BIO5  = Max Temp Warmest Month        BIO15 = Precipitation Seasonality
+BIO6  = Min Temp Coldest Month        BIO16 = Precipitation Wettest Quarter
+BIO7  = Temperature Annual Range      BIO17 = Precipitation Driest Quarter
+BIO8  = Mean Temp Wettest Quarter     BIO18 = Precipitation Warmest Quarter
+BIO9  = Mean Temp Driest Quarter      BIO19 = Precipitation Coldest Quarter
+BIO10 = Mean Temp Warmest Quarter     elevation = Elevation (m)
+
+**Automatic map extent.** The visible area of the map is the bounding
+box of the occurrence points plus a margin of 15\% of the longitudinal and
+latitudinal range of the data (at least 1 degree). The margin on the
+right-hand side is 50\% larger, leaving room for the legend, scale bar and
+north arrow. The climate raster and rivers are cropped to this area plus an
+additional 25\% buffer, so the raster always fills the map panel. The
+locator inset (when `inset = TRUE`) shows the mapped area, marked by a red
+rectangle, in its wider geographical context: it extends the map area by
+its own width and height in each direction (at least 15 degrees). All
+extents are clamped to valid longitudes and latitudes. Because the extent
+is computed from the range of the coordinates, datasets that cross the
+antimeridian (180 degrees) are not handled specially.
+
+**Point shapes.** Each taxon is drawn with a distinct point shape,
+assigned automatically (in alphabetical order of taxa) from a pool of 24
+shapes. If there are more than 24 taxa, supply your own `pt_shapes`.
+
+**Optional layers.** Country and state boundaries come from
+rnaturalearth (`ne_countries()` at medium scale; sub-national borders
+via `ne_states()` when `show_country_states` is not `NULL`, which requires
+the rnaturalearthhires package). Rivers are downloaded with
+`ne_download()` and therefore require an internet connection.
+
+**Output.** When `save = TRUE`, figures are written to a dated
+sub-folder of `"Figs.bioclimaps"` in the working directory (for example
+`"Figs.bioclimaps/18Sep2026"`), created if needed. Three figures are saved
+in the formats selected by `file_formats`: `MAP_RASTER` (panel a),
+`PLOT_RASTER` (panel b) and `MAP_RASTER_PLOT` (both panels combined and
+labelled "a)" and "b)"). The folder path is returned in the
+`output_dir` element of the result.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| geodata | Data frame returned by `geo_matrix_setting()`, carrying the `"env_cols"` and `"clim_stack"` attributes. |
+| bio_map_layer | Integer from `1` to `19`, or `"elevation"`. Climate variable shown as the raster background of the map. Default is `12` (annual precipitation). |
+| bio_x, bio_y | Integer from `1` to `19`, or `"elevation"`. Climate variables plotted on the x and y axes of the scatter plot. Default is `1` (annual mean temperature) for `bio_x` and `12` (annual precipitation) for `bio_y`. |
+| show_country_states | Character string with a country name (e.g. `"brazil"`) whose sub-national borders are drawn on the map, passed to `rnaturalearth::ne_states()`. If `NULL` (default), no sub-national borders are drawn. |
+| show_rivers | Logical. If `TRUE`, river centre lines are downloaded and drawn on the map. Default is `FALSE`. |
+| river_scale | Numeric. Natural Earth resolution for rivers, one of `10` (fine detail), `50` or `110` (coarser and faster). Only used when `show_rivers = TRUE`. Default is `10`. |
+| inset | Logical. If `TRUE` (default), a small locator map is added to the lower-left corner of the main map, with a red rectangle marking the mapped region. |
+| pt_shapes | Named numeric vector mapping each taxon to a point shape (see `graphics::points()`), or `NULL` (default) to assign shapes automatically. When supplied, it must contain an entry for every taxon in `geodata`. |
+| save | Logical. If `TRUE` (default), figures are written to disk. If `FALSE`, nothing is saved and the plots are only returned. |
+| file_formats | Character vector specifying the file formats used to save figures. One or more of `"pdf"` and `"jpg"`. Default is `c("pdf", "jpg")`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages, including the variables plotted and the output folder. |
+
+### Value
+
+Invisibly, a named list with the elements:
+
+`map`The main distribution map, including the inset when
+`inset = TRUE` (a cowplot composite).
+`scatter`The climate scatter plot (a `ggplot2::ggplot()`
+object).
+`combined`The two-panel figure, labelled "a)" and "b)".
+`inset`The locator inset (`ggplot2::ggplot()`), or `NULL` if
+`inset = FALSE`.
+`output_dir`Path of the folder where figures were saved, or
+`NULL` if `save = FALSE`.
+
+### Examples
+
+```r
+geo <- geo_matrix_setting(
+  xlsx_path = "occurrence_data.xlsx",
+  taxon_col = "species",
+  edaphic = FALSE
+)
+
+# Default figure: precipitation background, temperature x precipitation
+figs <- geo_bioclim_maps(geo)
+
+# Brazil with state borders and rivers, precipitation map,
+# temperature seasonality x precipitation seasonality scatter plot
+figs <- geo_bioclim_maps(
+  geo,
+  bio_map_layer = 12,
+  bio_x = 4,
+  bio_y = 15,
+  show_country_states = "brazil",
+  show_rivers = TRUE
+)
+
+# Elevation as the map background, without saving files
+figs <- geo_bioclim_maps(geo, bio_map_layer = "elevation", save = FALSE)
+
+# Further customise a returned plot
+figs$scatter + ggplot2::theme(legend.position = "bottom")
+
+# Save PDF only
+figs <- geo_bioclim_maps(
+  geo,
+  file_formats = "pdf"
+)
+
+# Save JPEG only
+figs <- geo_bioclim_maps(
+  geo,
+  file_formats = "jpg"
+)
+```
+
+

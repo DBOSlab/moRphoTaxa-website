@@ -1,0 +1,15 @@
+{
+  "hash": "1022de085609d7c993f410f854546e1f",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: 'fill_missing_traits'\ndescription: 'Add random measures for preliminar morphometric analysis'\ntoc: true\ntoc-depth: 3\n---\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nmoRphoTaxa::fill_missing_traits()\n```\n:::\n\n\n### Description\n\nCreates and associates a data frame of morphological traits for flowering plants\nwith species occurrence matrices, including traits specific to selected families.\nThe resulting data frame can be exported to a specified directory as a .xlsx file.\n\n### Arguments\n\n| Argument | Description |\n|---|---|\n| df | A data frame containing species occurrence records, previously loaded from the working directory. If NULL, only the morphological traits data frame is created. |\n| start_col | Character. Choose either \"trait full name\" to load full trait names or \"trait code\" to load abbreviated trait codes. |\n\n### Value\n\nA data frame combining occurrence data with the selected morphological traits,\nexported as a .xlsx file.\n\n### Examples\n\n```r\n# Example usage:\nfill_missing_traits(\n  base_df = my_occurrence_data,\n  trait_name = \"trait full name\",\n  quali_specific = \"passifloraceae\")\n```\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

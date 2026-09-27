@@ -1,0 +1,162 @@
+---
+title: 'geo_matrix_setting'
+description: 'Prepare a geographical/environmental matrix for ecogeographic analyses'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::geo_matrix_setting()
+```
+
+### Description
+
+Reads a structured Excel spreadsheet of georeferenced specimen
+occurrences and builds a combined geographical and environmental
+matrix for downstream ecogeographic and niche analyses in
+moRphoTaxa.
+
+The function standardizes the taxon column, optionally filters taxa,
+removes records with missing coordinates, and extracts WorldClim
+bioclimatic variables and elevation at each occurrence point.
+Optionally, SoilGrids edaphic variables can also be extracted.
+
+By default, the output retains only essential occurrence columns
+(taxon, decimalLatitude, and decimalLongitude), together with
+the extracted environmental variables. Original occurrence metadata
+can be retained using `keep_original = TRUE`.
+
+Climate and, when requested, soil raster layers used for extraction
+are kept and returned as attributes so they can be reused by
+downstream mapping or niche-modelling functions without being
+fetched again.
+
+### Details
+
+The input spreadsheet is expected to contain one row per occurrence
+record, a column identifying the taxon of each record, and Darwin
+Core-style `decimalLatitude` and `decimalLongitude`
+coordinate columns.
+
+The taxon column is internally standardized to `"taxon"`.
+Records can optionally be filtered using `species_selected`.
+Records with missing taxon assignments or missing geographic
+coordinates are removed.
+
+By default, only the essential occurrence columns are retained:
+`taxon`, `decimalLatitude`, and
+`decimalLongitude`. If an `"id"` column is present,
+it is also retained. All other original spreadsheet columns are
+excluded from the returned analysis matrix.
+
+When `keep_original = TRUE`, all original spreadsheet columns
+are retained before the environmental variables are appended.
+
+Climate data are fetched from WorldClim
+(`geodata::worldclim_global()`) at the resolution given by
+`wc_res`: the 19 bioclimatic variables
+(`bio1`-`bio19`) plus elevation.
+
+Elevation is extracted as a separate environmental variable named
+`"elevation"`. It is not a twentieth bioclimatic variable
+and is not named `"bio0"`.
+
+If the original spreadsheet contains an elevation column, it is
+excluded from the default analysis matrix to avoid duplication
+with the WorldClim-derived elevation variable.
+
+Edaphic (soil) data are extracted only when `edaphic = TRUE`.
+Each variable in `edaphic_vars` is fetched from SoilGrids
+(`geodata::soil_world()`) at the depth given by
+`edaphic_depth`.
+
+A variable that fails to download is skipped with a warning rather
+than stopping the whole function. Only successfully fetched
+variables are added to `geodata` and recorded in the
+`"env_cols"` attribute.
+
+When edaphic layers are extracted, the resulting soil raster stack
+is resampled to match the climate raster's resolution before being
+attached as an attribute.
+
+Occurrence points are converted once to a `terra::vect()` object
+(WGS84, `"EPSG:4326"`) and reused for climate and edaphic
+extraction. This object is also returned as the `"pts"`
+attribute.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| xlsx_path | Character. Path to the `.xlsx` file containing the occurrence data. |
+| sheet | Character string or integer specifying the Excel worksheet to read. Passed directly to `openxlsx::read.xlsx()`. Default is `1`. |
+| taxon_col | Character string giving the name of the column containing taxon assignments. This column is internally renamed to `"taxon"`. If `NULL`, no column is explicitly renamed, and the spreadsheet must already contain a `"taxon"` column. |
+| species_selected | Character vector specifying taxa to retain in the analysis. Values must match entries in the taxon column. If `NULL` (default), all taxa are retained. |
+| wc_res | Numeric. WorldClim resolution, in minutes of arc. One of `0.5`, `2.5`, `5`, or `10`. Default is `2.5`. |
+| edaphic | Logical. If `TRUE` (default), also extracts edaphic (soil) variables at each occurrence point. If `FALSE`, only occurrence and climate data are returned, and `edaphic_vars`/`edaphic_depth` are ignored. |
+| edaphic_vars | Character vector of SoilGrids variable codes to extract when `edaphic = TRUE`. Default is `c("clay", "sand", "silt", "soc", "phh2o", "cec", "nitrogen", "bdod", "cfvo", "ocd", "ocs")`. |
+| edaphic_depth | Numeric. Soil depth, in centimeters, at which edaphic variables are extracted when `edaphic = TRUE`. One of `5`, `15`, `30`, `60`, `100`, or `200`. Default is `5`. |
+| data_path | Character string giving the directory where downloaded WorldClim and SoilGrids raster files are cached. Created if it does not already exist. Default is `"variables_data/"`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages, including the number of occurrence records retained, the climate and edaphic variables added, and any variables that failed to download. |
+
+### Value
+
+A data frame (`geodata`) with one row per retained occurrence record:
+
+- `taxon`: taxonomic assignment.
+- `decimalLatitude`: geographic latitude.
+- `decimalLongitude`: geographic longitude.
+- `id`: specimen or occurrence identifier, if present in the original data.
+- `bio1`-`bio19`: WorldClim bioclimatic variables.
+- `elevation`: WorldClim elevation.
+- Soil variables: when `edaphic = TRUE` and successfully fetched.
+
+Four attributes are attached:
+
+`env_cols`A named list with a `"clim"` element
+(character vector of climate column names, including
+`"elevation"`) and, when applicable, an `"edaphic"` element
+(character vector of successfully extracted edaphic columns).
+`clim_stack`The terra::SpatRaster of climate layers
+(`bio1`-`bio19` and `elevation`) used for extraction.
+`soil_stack`The terra::SpatRaster of edaphic layers used
+for extraction, resampled to the climate raster's resolution;
+`NULL` if `edaphic = FALSE` or no soil variable was successfully
+fetched.
+`pts`The terra::SpatVector of occurrence points
+(`"EPSG:4326"`) built from the retained records.
+
+### Examples
+
+```r
+# Build a geographical/environmental matrix with climate only
+geo <- geo_matrix_setting(
+  xlsx_path = "occurrence_data.xlsx",
+  taxon_col = "species",
+  edaphic = FALSE
+)
+
+# Occurrence + climate + edaphic matrix
+geo <- geo_matrix_setting(
+  xlsx_path = "occurrence_data.xlsx",
+  taxon_col = "species",
+  species_selected = c("Species A", "Species B"),
+  wc_res = 2.5,
+  edaphic = TRUE,
+  edaphic_depth = 5
+)
+
+# Occurrence + environmental data
+geo
+
+# Which columns belong to which environmental block
+attr(geo, "env_cols")
+
+# Reuse the cached climate raster and occurrence points downstream
+attr(geo, "clim_stack")
+attr(geo, "pts")
+```
+
+

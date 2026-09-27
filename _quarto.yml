@@ -1,0 +1,81 @@
+project:
+  output-dir: docs
+  type: website
+  resources:
+    - figures/**
+
+website:
+  title: "moRphoTaxa"
+  site-url: https://dboslab.github.io/moRphoTaxa-website/
+  page-navigation: true
+  reader-mode: true
+  favicon: "figures/moRphoTaxa_hex_sticker.png"
+
+  page-footer:
+    left: "moRphoTaxa — DBOSlab, Jardim Botânico do Rio de Janeiro"
+    right:
+      - icon: github
+        href: https://github.com/DBOSlab/moRphoTaxa
+        aria-label: moRphoTaxa GitHub
+
+  navbar:
+    search: true
+    background: light
+    collapse-below: lg
+    type: light
+    logo: "figures/moRphoTaxa_hex_sticker.png"
+    href: index.qmd
+    left:
+      - text: "Overview"
+        href: index.qmd
+      - text: "Pipeline"
+        href: pipeline/index.qmd
+      - text: "Reference"
+        href: reference/index.qmd
+      - text: "Authors"
+        href: authors/index.qmd
+      - text: "Help"
+        menu:
+          - text: "Report a Bug"
+            icon: "bug"
+            href: "https://github.com/DBOSlab/moRphoTaxa/issues"
+          - text: "Ask a Question"
+            icon: "chat-right-text"
+            href: "https://github.com/DBOSlab/moRphoTaxa/discussions"
+
+    tools:
+      - icon: github
+        href: https://github.com/DBOSlab/moRphoTaxa
+        text: moRphoTaxa GitHub
+
+  sidebar:
+    - id: pipeline
+      title: Pipeline
+      collapse-level: 3
+      align: left
+      contents:
+        - text: Overview
+          href: pipeline/index.qmd
+        - text: "1. Get herbarium data"
+          href: pipeline/1_get_herbarium_specimens.qmd
+        - text: "2. Clean occurrence data"
+          href: pipeline/2_clean_data.qmd
+        - text: "3. Add morphological traits"
+          href: pipeline/3_add_morphological_traits.qmd
+        - text: "4. Run analysis"
+          href: pipeline/4_analysis.qmd
+
+format:
+  html:
+    toc: true
+    code-copy: true
+    code-overflow: wrap
+    code-tools: true
+    css: styles.css
+    eval: false
+    lightbox: true
+    theme:
+      light: [spacelab, theme.scss]
+      dark: [spacelab, theme-dark.scss]
+    include-in-header: gtm-head.html
+    include-before-body: gtm-body.html

@@ -1,0 +1,157 @@
+---
+title: 'geo_enm'
+description: 'Ensemble species distribution models (ENM) for each taxon'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::geo_enm()
+```
+
+### Description
+
+Fits ensemble species distribution models (ecological niche models, ENM)
+for every taxon in the geographical/environmental matrix produced by
+`geo_matrix_setting()`, using the flexsdm framework. For each taxon,
+the function delimits a calibration area, samples pseudo-absences, fits up
+to five algorithms (GLM, GAM, GBM, neural network and random forest),
+combines them into a weighted ensemble, predicts habitat suitability across
+the study region, estimates predictor importance, and produces a
+suitability map with a locator inset.
+
+Predictors are taken automatically from the raster stacks stored as
+attributes of `geodata`: the climate stack (`"clim_stack"`) and, when
+available, the edaphic stack (`"soil_stack"`). The study region and the
+locator inset are derived automatically from the geographical distribution
+of the records.
+
+### Details
+
+**Input.** `geodata` must be the data frame returned by
+`geo_matrix_setting()`, carrying the `"clim_stack"` attribute and,
+optionally, the `"soil_stack"` attribute. It must contain the columns
+`taxon`, `decimalLatitude` and `decimalLongitude`. All taxa present in
+`geodata` are modelled; to restrict the analysis to some taxa, use
+`species_selected` in `geo_matrix_setting()`.
+
+**Predictors.** If `"soil_stack"` is present, climate and edaphic
+layers are combined (`env_source = "clim_edaphic"`); otherwise only climate
+layers are used (`env_source = "clim"`). The soil stack is resampled
+(bilinear) to the climate raster grid only if their geometries differ.
+Highly collinear predictors are then removed: pairwise Pearson correlations
+are computed on a random sample of 5000 raster cells, and predictors are
+dropped with `caret::findCorrelation()` using a cutoff of |r| > 0.8.
+Layers with no variation in the sample are also dropped. The predictors
+retained are used for all taxa.
+
+**Study region.** The predictor stack is cropped to the bounding box of
+all occurrence records, expanded by `buffer_km` (converted to degrees at
+about 111 km per degree) plus a 2-degree safety margin. This avoids
+predicting over the whole globe and reduces memory use. Memory fraction of
+terra is lowered to 0.2 during the run and restored on exit.
+
+**Workflow per taxon.**
+
+1. Occurrence records are selected. Taxa with fewer than `min_occ` records are skipped with a warning.
+2. A calibration area is built with `flexsdm::calib_area()` (`"bmcp"` method: buffered minimum convex polygon of width `buffer_km`), and predictors are cropped and masked to it.
+3. Pseudo-absences are sampled with `flexsdm::sample_pseudoabs()` (`"env_const"` method: environmentally constrained), at `pa_ratio` pseudo-absences per presence.
+4. Predictor values are extracted at presences and pseudo-absences, incomplete rows are removed, and data are split into `folds` cross-validation partitions (`flexsdm::part_random()`, `"kfold"`).
+5. The five algorithms are fitted, each tuned over a small hyperparameter grid and thresholded at the maximum sensitivity + specificity (`"max_sens_spec"`). An algorithm that fails to converge is dropped; if fewer than two algorithms converge, the taxon is skipped.
+6. Models are combined with `flexsdm::fit_ensemble()`, weighting by the Sorensen index, and habitat suitability (0-1) is predicted across the study region with `flexsdm::sdm_predict()`.
+7. Predictor importance is estimated by permutation with `flexsdm::sdm_varimp()`, repeated `importance_perm` times, and averaged over the Sorensen metric.
+8. A suitability map with the occurrence points, optional state borders and a locator inset is built.
+
+A failure at any step for one taxon produces a warning and moves on to the
+next taxon, so a single problematic taxon does not stop the whole run. The
+number of records must be at least `folds` for cross-validation partitions
+to be created.
+
+**Output.** When `save = TRUE`, files are written to a dated sub-folder
+of `"Figs_ENM"` in the working directory (for example
+`"Figs_ENM/18Sep2026"`), created if needed. For each successfully modelled
+taxon:
+
+- ENM_map_<taxon>.pdf and/or `.jpg`: suitability map;
+- ENM_suitability_<taxon>.tif: suitability raster (GeoTIFF), for use in downstream niche-overlap analyses;
+- ENM_importance_<taxon>.pdf and/or `.jpg`: predictor importance plot;
+- ENM_<taxon>.xlsx: ensemble performance and predictor importance.
+
+Plus `ENM_summary.xlsx`, one row per modelled taxon. Characters other than
+letters, digits, `.`, _ and `-` in taxon names are replaced by _ in file
+names.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| geodata | Data frame returned by `geo_matrix_setting()`, carrying the `"clim_stack"` attribute and, optionally, the `"soil_stack"` attribute. |
+| buffer_km | Numeric. Width, in kilometres, of the buffer used to build each taxon's calibration area and to expand the study region. Default is `100`. |
+| pa_ratio | Numeric. Number of pseudo-absences sampled per presence. Default is `2`. |
+| folds | Integer. Number of cross-validation folds. Default is `5`. |
+| min_occ | Integer. Minimum number of occurrence records required to model a taxon. Default is `3`. Note that `folds` also needs to be satisfiable by the number of records. |
+| importance_perm | Integer. Number of permutations used to estimate predictor importance. Default is `10`. |
+| seed | Integer or `NULL`. Random seed set at the start of each taxon's model (pseudo-absence sampling, cross-validation partitions, algorithm fitting and permutation importance), so results for a taxon do not depend on the other taxa in `geodata`. Default is `123`. If `NULL`, the random state is left untouched. |
+| show_country_states | Character string with a country name (e.g. `"brazil"`) whose sub-national borders are drawn on the maps, passed to `rnaturalearth::ne_states()` (requires the rnaturalearthhires package). If `NULL` (default), no sub-national borders are drawn. |
+| inset | Logical. If `TRUE` (default), a small locator map is added to each suitability map, with a red rectangle marking the study region. |
+| save | Logical. If `TRUE` (default), maps, rasters, plots and tables are written to disk. If `FALSE`, nothing is saved and results are only returned. |
+| file_formats | Character vector specifying which image formats to save. One or more of `"pdf"` and `"jpg"`. Default is `c("pdf", "jpg")`. Ignored when `save = FALSE`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages, including retained predictors, taxa modelled, algorithms fitted and ensemble performance. |
+
+### Value
+
+Invisibly, a named list with the elements:
+
+`summary`A data frame with one row per modelled taxon:
+`taxon`, `n_occ` (records used), `n_algos` (algorithms in the ensemble),
+`algos` (algorithm names separated by `"|"`), `env_source`
+(`"clim"` or `"clim_edaphic"`) and `sorensen` (ensemble Sorensen index).
+`NULL` if no taxon could be modelled.
+`suitability`A named list of terra::SpatRaster objects with
+the predicted habitat suitability (0-1) of each modelled taxon.
+`maps`A named list of suitability maps (`ggplot2::ggplot()` or
+cowplot objects), one per modelled taxon.
+`predictors`Character vector with the names of the predictors
+retained after the collinearity filter.
+`output_dir`Path of the folder where files were saved, or `NULL`
+if `save = FALSE`.
+
+### Examples
+
+```r
+geo <- geo_matrix_setting(
+  xlsx_path = "occurrence_data.xlsx",
+  taxon_col = "species",
+  edaphic = TRUE
+)
+
+# Default run: climate + edaphic predictors
+enm <- geo_enm(geo)
+
+# Custom settings, with state borders
+enm <- geo_enm(
+  geo,
+  buffer_km = 100,
+  pa_ratio = 2,
+  folds = 5,
+  min_occ = 3,
+  importance_perm = 10,
+  show_country_states = "brazil"
+)
+
+# Summary table and a suitability raster
+enm$summary
+terra::plot(enm$suitability[["Species A"]])
+
+# Climate-only models, without saving files
+geo_clim <- geo_matrix_setting("occurrence_data.xlsx",
+                               taxon_col = "species", edaphic = FALSE)
+enm <- geo_enm(geo_clim, save = FALSE)
+
+# Save PDF maps only
+enm <- geo_enm_ensemble(geo, file_formats = "pdf")
+```
+
+

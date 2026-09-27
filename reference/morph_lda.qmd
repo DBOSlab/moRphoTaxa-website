@@ -1,0 +1,177 @@
+---
+title: 'morph_lda'
+description: 'Linear discriminant analysis of morphological trait blocks'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::morph_lda()
+```
+
+### Description
+
+Performs linear discriminant analysis (LDA) on morphological trait blocks
+derived from a morphometric matrix, and generates a standard set of
+diagnostic figures and tables for each trait block analyzed. The function
+is designed to work directly on the objects produced by
+`morph_matrix_setting()`.
+
+For each requested trait block, the function imputes missing trait values,
+standardizes the traits, fits an LDA with `MASS::lda()` against a chosen
+grouping variable, saves a scatterplot of specimens on the requested
+discriminant axes with confidence ellipses per group, saves a bar plot of
+trait loadings on the first discriminant axis, and saves the specimen
+scores and trait loadings to spreadsheets.
+
+### Details
+
+`morph_lda()` expects `analysis_data` as produced by
+`morph_matrix_setting()`: a numeric data frame with `id` and `taxon`
+columns plus one column per morphological trait, with specimen IDs as row
+names. The trait blocks (`"veg"`, `"flo"`, `"fru"`, or any subset thereof)
+are not passed in separately — they are read directly from the
+`"base_cols"` attribute that `morph_matrix_setting()` attaches to
+`analysis_data`. If `analysis_data` has no `"base_cols"` attribute (e.g.
+it was not built with `morph_matrix_setting()`, or the attribute was
+dropped by an intervening subsetting operation), the function stops with an
+informative error.
+
+The `lda_blocks` argument controls which trait sets are analyzed:
+
+- `"all"`: runs LDA on each individual block in `base_cols` (typically `"veg"`, `"flo"`, `"fru"`), as well as on every pairwise and full combination of these blocks (`"vegflo"`, `"vegfru"`, `"flofru"`, `"vegflofru"`). Combinations whose source blocks are absent from `base_cols` are silently skipped;
+- a character vector naming one or more blocks in `base_cols`: runs LDA only on the requested block(s), individually.
+
+The grouping variable discriminated between is read from the column of
+`analysis_data` named in `lda_group` — by default `"taxon"`, the grouping
+column that `morph_matrix_setting()` always attaches. Passing any other
+name only works if that column has been added to `analysis_data`
+beforehand; `morph_lda()` does not read from any other object. Within
+each block, specimens with a missing value for `lda_group` are removed,
+as are specimens with no observation for any trait in the block; group
+levels with fewer than `lda_min_n` remaining specimens are then dropped
+(with a message naming them), since a group needs enough specimens to
+contribute a stable within-group covariance estimate. The block is
+skipped with a warning if fewer than 2 group levels remain after this
+filtering, or if no trait varies among the retained specimens.
+
+LDA requires complete cases. Remaining missing values are imputed
+trait-by-trait according to `lda_impute`: `"mean"` (default) fills a
+trait's missing values with that trait's overall mean across all retained
+specimens, matching the behaviour of the original analysis script;
+`"group_mean"` fills them with the mean of the specimen's own group
+instead, which is usually preferable for discriminant analysis since a
+trait that is systematically higher or lower in one group is not pulled
+toward the grand mean for the specimens missing it — but note this uses
+group identity to fill in trait values before fitting a model that
+predicts group identity from those same traits, so it can make group
+separation look better than it would from complete data alone, and is
+best treated with that caveat when a block has substantial missingness.
+If a group has no non-missing values for a trait at all, that trait's
+overall mean is used for that group's specimens instead, with a warning.
+Traits that are constant among the retained specimens after imputation
+are then dropped, since they cannot contribute to group separation; the
+remaining traits are centered and scaled with `base::scale()` before
+fitting, so that loadings are comparable across traits measured in
+different units.
+
+Taxon colours are taken from the `"taxon_colors"` attribute attached to
+`analysis_data` by `morph_matrix_setting()` when `lda_group = "taxon"`,
+so that groups keep the same colour used in other plots (e.g.
+`morph_pca()`, `morph_kmeans()`). If this attribute is missing, lacks an
+entry for a group present in a given block, or `lda_group` is not
+`"taxon"`, colours are generated automatically from the `viridis`
+palette for the groups analyzed, with a warning in the first two cases.
+
+`lda_lds` names the discriminant axes to plot (default `c("LD1", "LD2")`).
+If a block yields fewer discriminant functions than requested — which
+happens whenever the number of retained groups or traits is small, since
+at most `min(n_groups - 1, n_traits)` axes exist — the function falls
+back to the first two available axes (or the only one) and reports this.
+When only one discriminant axis is available (the common case of exactly
+two groups), a scatterplot with ellipses cannot be drawn in two
+dimensions; the function instead saves a one-dimensional density plot of
+that axis, with one curve per group and a rug of individual scores, so
+the block still produces a usable figure rather than a degenerate one.
+
+Output files are written to a date-specific directory inside `Figs.LDA`.
+For each analyzed block, a scores scatterplot (or density plot, in the
+single-axis case), a loadings bar plot for the first discriminant axis,
+and — when `save_xlsx = TRUE` — spreadsheets of specimen scores and
+trait loadings, are saved with names prefixed `"LDA_plot_"`,
+`"LDA_loadings_"` and `"LDA_scores_"`/`"LDA_loadings_"` respectively and
+suffixed by the block name and `lda_group`. A single `"LDA_summary.xlsx"`
+combining the summary rows of all analyzed blocks is written once every
+block has been processed.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| analysis_data | A numeric data frame containing morphological traits as columns and specimens as rows, with `id` and `taxon` columns and specimen identifiers as row names. Typically the object returned by `morph_matrix_setting()`. If it carries a `"taxon_colors"` attribute and `lda_group = "taxon"`, those colours are reused; otherwise a `viridis` palette is generated automatically. |
+| lda_blocks | Character. Either `"all"`, to run LDA on every individual block in `base_cols` plus all pairwise and full combinations of these blocks, or a character vector naming one or more blocks in `base_cols` to analyze individually. Default is `"all"`. |
+| lda_group | Character string naming the column of `analysis_data` to discriminate between. Default is `"taxon"`. |
+| lda_lds | Character vector of length 1 or 2 naming the discriminant axes to plot, e.g. `c("LD1", "LD2")` (default). Falls back to the first available axis or axes when a block does not have enough discriminant functions for what is requested. |
+| lda_ellipse | Numeric between 0 and 1. Confidence level of the ellipses drawn on the two-dimensional scores plot. Default is `0.95`. Unused when only one discriminant axis is available for a block. |
+| lda_min_n | Integer. Minimum number of specimens a group must have, within a given block, to be retained. Groups with fewer specimens are dropped before fitting. Default is `3`. |
+| lda_impute | Character string, `"mean"` (default) or `"group_mean"`, controlling how missing trait values are imputed before fitting (see Details). |
+| save_xlsx | Logical. If `TRUE` (default), writes spreadsheets of specimen scores, trait loadings, and the combined block summary to the output directory. |
+| file_formats | Character vector specifying which image formats to save. One or more of `"pdf"` and `"jpeg"`. Default is `c("pdf", "jpeg")`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages, dropped groups, per-block summaries, skipped blocks, and the output directory to the console. |
+
+### Value
+
+Invisibly returns a summary data frame with one row per analyzed block, or
+`NULL` if no block could be analyzed. The columns are:
+
+`block`Name of the trait block.
+`group`The grouping variable discriminated between (`lda_group`).
+`n`Number of specimens entering the LDA.
+`n_groups`Number of group levels retained.
+`n_lds`Number of discriminant functions available.
+`ld1_var`Percentage of between-group variance explained by the
+first discriminant axis.
+
+The function is also called for its side effects: scores and loadings
+plots, and (when `save_xlsx = TRUE`) spreadsheets, are written to disk for
+each analyzed trait block.
+
+### Examples
+
+```r
+# Build the morphometric matrix
+res <- morph_matrix_setting(
+  xlsx_path = "output_data/all_data.xlsx",
+  taxon_col = "taxon",
+  trait_name_type = "code",
+  veg_first = "petiole_length/PETIlng",
+  flo_first = "inflorescence_length/INFLlng",
+  fru_first = "fruit_stipe_length/FRSTlng"
+)
+
+# LDA of taxon identity for every individual block and every combination
+lda_summary <- morph_lda(
+  analysis_data = res,
+  lda_blocks = "all"
+)
+
+lda_summary
+
+# Vegetative block only, with group-mean imputation
+morph_lda(
+  analysis_data = res,
+  lda_blocks = "veg",
+  lda_impute = "group_mean"
+)
+
+# Discriminate a different grouping column added beforehand
+res$locality <- specimen_localities[rownames(res)]
+morph_lda(
+  analysis_data = res,
+  lda_group = "locality"
+)
+```
+
+

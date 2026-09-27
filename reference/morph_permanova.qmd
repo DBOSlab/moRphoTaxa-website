@@ -1,0 +1,176 @@
+---
+title: 'morph_permanova'
+description: 'PERMANOVA and PERMDISP on morphological trait blocks'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+moRphoTaxa::morph_permanova()
+```
+
+### Description
+
+Tests whether taxa differ in multivariate location (PERMANOVA,
+`vegan::adonis2()`) and in multivariate dispersion (PERMDISP,
+`vegan::betadisper()`) on morphological trait blocks derived from a
+morphometric matrix, and generates a standard set of diagnostic figures
+and spreadsheets for each trait block analyzed. The function is designed
+to work directly on the objects produced by `morph_matrix_setting()`, and
+mirrors the structure of `morph_pcoa()` and `morph_dapc()`.
+
+For each requested trait block, the function computes a specimen-by-specimen
+distance matrix, tests for a difference in multivariate location among taxa
+with PERMANOVA, tests for a difference in multivariate dispersion (spread)
+among taxa with PERMDISP, runs pairwise PERMANOVA and pairwise PERMDISP
+between every pair of taxa, saves a boxplot of each specimen's distance to
+its taxon centroid, saves a PCoA ordination of the distance matrix with
+taxon centroids and confidence ellipses, and saves an Excel workbook with
+every result table.
+
+### Details
+
+`morph_permanova()` expects `analysis_data` as produced by
+`morph_matrix_setting()`: a numeric data frame with `id` and `taxon`
+columns plus one column per morphological trait, with specimen IDs as row
+names. The trait blocks (`"veg"`, `"flo"`, `"fru"`, or any subset thereof)
+are not passed in separately: they are read directly from the
+`"base_cols"` attribute that `morph_matrix_setting()` attaches to
+`analysis_data`. If `analysis_data` has no `"base_cols"` attribute (e.g.
+it was not built with `morph_matrix_setting()`, or the attribute was
+dropped by an intervening subsetting operation), the function stops with
+an informative error.
+
+The `permanova_blocks` argument controls which trait sets are analyzed:
+
+- `"all"`: runs the analysis on each individual block in `base_cols` (typically `"veg"`, `"flo"`, `"fru"`), as well as on every pairwise and full combination of these blocks (`"vegflo"`, `"vegfru"`, `"flofru"`, `"vegflofru"`);
+- a character vector naming one or more blocks in `base_cols`: runs the analysis only on the requested block(s), individually.
+
+For each trait block, rows with missing values in the relevant columns are
+removed via `stats::na.omit()`, and traits with zero variance are dropped.
+The grouping variable is the `taxon` column of `analysis_data`; any taxon
+with fewer than `min_n` specimens (after the above filtering) is removed
+from the block entirely, with a message identifying the removed taxa.
+Blocks left with fewer than 2 taxa, fewer than 2 traits, or fewer
+specimens than taxa, are skipped with a warning.
+
+**Distance.** The distance between specimens is set by `dist_method`,
+passed to `vegan::vegdist()`: `"gower"` (default), `"euclidean"` or
+`"bray"`. For `"euclidean"`, traits are centred and scaled first, so the
+result matches the distance underlying `morph_pca()`. For `"gower"` and
+`"bray"`, traits are used on their original scale. `"bray"` requires
+non-negative trait values and stops with an informative error otherwise.
+
+**PERMANOVA.** `vegan::adonis2()` partitions the distance matrix by
+`taxon`, with `permutations` permutations, testing whether taxa differ in
+multivariate location (centroid). The reported statistics are the pseudo-F
+ratio, R^2 (proportion of the total sum of squares explained by
+taxon) and a permutation p-value.
+
+**PERMDISP.** `vegan::betadisper()` (`type = "median"`) computes each
+specimen's distance to its taxon's spatial median in the ordination of the
+distance matrix, and `vegan::permutest.betadisper()` tests whether these
+distances differ among taxa, with `permutations` permutations. PERMDISP is
+the multivariate analogue of a test for homogeneity of variance: a
+significant PERMANOVA together with a significant PERMDISP means that the
+taxa may differ in dispersion as well as (or instead of) location, so the
+PERMANOVA result alone should not be read as evidence of separate
+centroids.
+
+**Pairwise tests.** For every pair of taxa retained in a block,
+PERMANOVA is repeated on the corresponding sub-matrix of the distance
+matrix, and PERMDISP pairwise comparisons are obtained from
+`vegan::permutest.betadisper()` (`pairwise = TRUE`). In both cases,
+p-values are adjusted across all pairs within a block with
+`stats::p.adjust()` (`method = p_adjust`).
+
+The random seed (`seed`) is set once per block, before the PERMANOVA,
+PERMDISP, and all pairwise tests of that block, so permutation p-values do
+not depend on the order in which blocks are analyzed.
+
+Taxon colours are taken from the `"taxon_colors"` attribute attached to
+`analysis_data` by `morph_matrix_setting()`, so that each taxon keeps the
+same colour used in other plots (e.g. `morph_pca()`, `morph_pcoa()`,
+`morph_dapc()`). If this attribute is missing, or lacks an entry for a
+taxon retained in a given block, colours are generated automatically from
+the `viridis` palette for the affected taxa, with a warning.
+
+For each analyzed block, the following figures are generated:
+
+- a boxplot (with individual points) of each specimen's distance to its taxon's centroid, one box per taxon;
+- a PCoA ordination (axes 1 and 2 of the distance matrix used for PERMDISP) with a normal confidence ellipse per taxon at level `ellipse_level`.
+
+Output files are written to a date-specific directory inside
+`Figs_PERMANOVA`. Each figure is saved in the formats specified by
+`file_formats`. File names are prefixed by figure type (`"PERMDISP_boxplot_"`,
+`"PERMANOVA_ordination_"`) and suffixed by the trait block name.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| analysis_data | A numeric data frame containing morphological traits as columns and specimens as rows, with `id` and `taxon` columns and specimen identifiers as row names. Typically the `analysis_data` element returned by `morph_matrix_setting()`. If this object carries a `"taxon_colors"` attribute, those colours are reused; otherwise a `viridis` palette is generated automatically. |
+| permanova_blocks | Character. Either `"all"`, to run the analysis on every individual block in `base_cols` plus all pairwise and full combinations of these blocks, or a character vector naming one or more blocks in `base_cols` to analyze individually. Default is `"all"`. |
+| dist_method | Character. Distance between specimens, passed to `vegan::vegdist()`: `"gower"` (default), `"euclidean"` (on scaled traits) or `"bray"` (requires non-negative traits). |
+| permutations | Integer. Number of permutations used by PERMANOVA and PERMDISP (overall and pairwise). Default is `999`. |
+| min_n | Integer. Minimum number of specimens a taxon must have, within a given trait block, to be retained for that block. Taxa with fewer specimens are dropped block-by-block. Default is `3`. |
+| p_adjust | Character. Method used to adjust pairwise p-values across all pairs within a block, passed to `stats::p.adjust()`. Default is `"BH"` (Benjamini-Hochberg). |
+| ellipse_level | Numeric. Confidence level (between 0 and 1) used for the per-taxon normal confidence ellipses drawn on the PCoA ordination plot. Default is `0.95`. |
+| seed | Integer or `NULL`. Random seed set once per block, before its PERMANOVA, PERMDISP and pairwise tests, so a block's permutation p-values do not depend on the other blocks analyzed. Default is `123`. If `NULL`, the random state is left untouched. |
+| save_xlsx | Logical. If `TRUE` (default), an Excel workbook with the PERMANOVA, PERMDISP and pairwise result tables is written for each analyzed block, plus a `"PERMANOVA_summary.xlsx"` collecting one row per block. |
+| file_formats | Character vector specifying which image formats to save. One or more of `"pdf"` and `"jpeg"`. Default is `c("pdf", "jpeg")`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages, including removed taxa, skipped blocks, test statistics and the output directory, to the console. |
+
+### Value
+
+Invisibly returns a data frame summarizing the blocks successfully
+analyzed, with one row per block and columns `block`, `n`, `n_groups`,
+`permanova_F`, `permanova_R2`, `permanova_p`, `permdisp_F` and
+`permdisp_p`; or invisibly returns `NULL` if no block could be analyzed.
+
+The function is primarily called for its side effects: boxplots, PCoA
+ordination plots, and per-block and summary Excel workbooks are written to
+disk for each analyzed trait block.
+
+### Examples
+
+```r
+# Build the morphometric matrix
+res <- morph_matrix_setting(
+  xlsx_path = "output_data/all_data.xlsx",
+  taxon_col = "taxon",
+  trait_name_type = "code",
+  veg_first = "petiole_length/PETIlng",
+  flo_first = "inflorescence_length/INFLlng",
+  fru_first = "fruit_stipe_length/FRSTlng"
+)
+
+# Run PERMANOVA + PERMDISP (Gower distance) on every block and combination
+morph_permanova(
+  analysis_data = res,
+  permanova_blocks = "all"
+)
+
+# Vegetative block only, Euclidean distance, 4999 permutations
+morph_permanova(
+  analysis_data = res,
+  permanova_blocks = "veg",
+  dist_method = "euclidean",
+  permutations = 4999
+)
+
+# Selected blocks, saving PDF output only
+perm <- morph_permanova(
+  analysis_data = res,
+  permanova_blocks = c("veg", "flo"),
+  min_n = 5,
+  file_formats = "pdf"
+)
+
+# Summary table
+perm
+```
+
+
