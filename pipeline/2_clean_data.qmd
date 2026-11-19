@@ -20,14 +20,6 @@ Load the R packages required for taxonomic and dataset standardization.
 
 #install.packages("devtools")
 
-# LCVP: https://github.com/idiv-biodiversity/LCVP
-#devtools::install_github("idiv-biodiversity/LCVP")
-library(LCVP)
-
-# lcvplants: https://github.com/idiv-biodiversity/lcvplants
-#devtools::install_github("idiv-biodiversity/lcvplants")
-library(lcvplants)
-
 # barRoso: https://github.com/DBOSlab/barRoso
 #devtools::install_github("DBOSlab/barRoso")
 library(barRoso)
@@ -42,13 +34,6 @@ library(dplyr)
 
 #install.packages(openxlsx)
 library(openxlsx)
-```
-
-Load auxiliary functions for the script.
-
-```{r eval = FALSE}
-
-source("functions/auxiliary_functions.R")
 ```
 
 Load the merged dataset generated in the previous step of the pipeline, if it is not already present in the **R** environment.
@@ -69,14 +54,6 @@ clean_data_path <- file.path("output_data/", paste0("clean_data_",  timestamp_ta
 ```
 
 ## Harmonize dataset structure
-
-Convert country names to standard English format using a auxiliary function.
-
-```{r eval = FALSE}
-if ("country" %in% names(all_data)) {
-  all_data$country <- convert_country_EN(all_data$country)
-}
-```
 
 Different biodiversity databases provide slightly different field structures.The following step harmonizes the dataset structure by selecting relevant fields and inserting missing columns.
 
@@ -137,7 +114,6 @@ Export the cleaned dataset to **Excel** for manual inspection and correction.
 ```{r eval = FALSE}
 
 openxlsx::write.xlsx(clean_data, file = clean_data_path)
-}
 ```
 
 ## Reload the dataset after manual corrections (optional)

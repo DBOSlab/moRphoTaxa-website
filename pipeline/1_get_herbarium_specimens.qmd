@@ -36,6 +36,10 @@ library(refloraR)
 #devtools::install_github("DBOSlab/jabotR")
 library(jabotR)
 
+# barRoso: https://dboslab.github.io/barRoso-website/
+#devtools::install_github("DBOSlab/barRoso")
+library(barRoso)
+
 # rspeciesLink: https://github.com/LimaRAF/plantR
 # rgbif2: https://github.com/LimaRAF/plantR
 #devtools::install_github("LimaRAF/plantR")
@@ -51,13 +55,6 @@ library(dplyr)
 
 #install.packages(openxlsx)
 library(openxlsx)
-```
-
-Load auxiliary functions for the script.
-
-```{r eval = FALSE}
-
-source("functions/auxiliary_functions.R")
 ```
 
 Create folders in the directory to save the occurrence data.
@@ -94,7 +91,7 @@ This function requires a personal API key to download the data. You can generate
 ```{r eval = FALSE}
 #Example:
 
-personal_key <- "DBpBRprOuNV8ZWoxRFcr"
+personal_key <- "XXpBRprXxNV8XXoxRFcr"
 ```
 
 To query multiple species, the function downloads a separate dataset for each species in the list.
@@ -107,20 +104,10 @@ data_speciesLink <- lapply(
     filename = "spLink_records_search",
     save = TRUE,
     key = personal_key,
-    basisOfRecord = NULL,
-    family = NULL,
     species = x,
-    collectionCode = NULL,
-    country = NULL,
-    stateProvince = NULL,
-    county = NULL,
-    Coordinates = NULL,
-    CoordinatesQuality = NULL,
-    Scope = NULL,
     Synonyms = "no synomyms",
     Typus = FALSE,
     Images = FALSE,
-    RedList = NULL,
     MaxRecords = 5000,
     file.format = "csv",
     compress = FALSE
@@ -143,7 +130,7 @@ Finally, an auxiliary function standardizes the column names to conform to Darwi
 
 ```{r eval = FALSE}
 
-data_speciesLink <- fix_column_names(data_speciesLink)
+data_speciesLink <- barRoso::barroso_dwc(data_speciesLink)
 ```
 
 ## REFLORA
@@ -152,19 +139,9 @@ Download specimen records from the *REFLORA Virtual Herbarium*.
 
 ```{r eval = FALSE}
 data_reflora <- refloraR::reflora_records(
-  herbarium = NULL,
   repatriated = TRUE,
   taxon = targeted_taxa,
-  state = NULL,
-  recordYear = NULL,
-  indets = TRUE,
-  reorder = c("herbarium", "taxa", "collector", "area", "year"),
-  path = NULL,
-  updates = TRUE,
-  verbose = TRUE,
-  save = FALSE,
-  dir = "input_data/",
-  filename = "reflora_records_search"
+  indets = TRUE
 )
 ```
 
@@ -181,18 +158,8 @@ Download specimen records from the *JABOT* database of the *Rio de Janeiro Botan
 
 ```{r eval = FALSE}
 data_jabot <- jabotR::jabot_records(
-  herbarium = NULL,
   taxon = targeted_taxa,
-  state = NULL,
-  recordYear = NULL,
-  indets = TRUE,
-  reorder = c("herbarium", "taxa", "collector", "area", "year"),
-  path = NULL,
-  updates = TRUE,
-  verbose = TRUE,
-  save = FALSE,
-  dir = "input_data/",
-  filename = "jabot_records_search"
+  indets = TRUE
 )
 ```
 
@@ -240,31 +207,24 @@ data_gbif <- dplyr::bind_rows(data_gbif, .id = "original_search")
 
 ## Merge all sources
 
-First, add a column identifying the origin of each record.
+First, create a names list with all data records from different databases.
 
 ```{r eval = FALSE}
-data_gbif$source <- "GBIF"
-data_jabot$source <- "JABOT"
-data_reflora$source <- "REFLORA"
-data_speciesLink$source <- "speciesLink"
+data_list <- list(GBIF = gbif_data,
+                  speciesLink = splink_data,
+                  REFLORA = reflora,
+                  JABOT = jabot)
 ```
 
-Then convert all fields to character before merging.
+Use `barRoso` function to combine the sources.
 
 ```{r eval = FALSE}
 
-data_list <- list(data_gbif, data_jabot, data_reflora, data_speciesLink)
-
-data_list <- lapply(data_list, function(df) {
-  df %>% dplyr::mutate(across(everything(), as.character))
-})
-```
-
-Combine the sources.
-
-```{r eval = FALSE}
-
-all_data <- dplyr::bind_rows(data_list)
+all_data <- barRoso::barroso_cat(list_sources = data_list,
+                                 keep_source = c("JABOT", 
+                                                  "speciesLink", 
+                                                  "REFLORA", 
+                                                  "GBIF"))
 ```
 
 # Export dataset
@@ -274,7 +234,7 @@ Export the merged dataset to Excel.
 ```{r eval = FALSE}
 
 openxlsx::write.xlsx(all_data, file = all_data_path)
-all_data_path
+
 ```
 
 
