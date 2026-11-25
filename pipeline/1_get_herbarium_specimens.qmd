@@ -126,7 +126,7 @@ names(data_speciesLink) <- targeted_taxa
 data_speciesLink <- dplyr::bind_rows(data_speciesLink, .id = "original_search")
 ```
 
-Finally, an auxiliary function standardizes the column names to conform to Darwin Core terminology.
+Finally, the `barRoso::barroso_dwc` function standardizes the column names to conform to Darwin Core terminology.
 
 ```{r eval = FALSE}
 
@@ -210,13 +210,13 @@ data_gbif <- dplyr::bind_rows(data_gbif, .id = "original_search")
 First, create a names list with all data records from different databases.
 
 ```{r eval = FALSE}
-data_list <- list(GBIF = gbif_data,
-                  speciesLink = splink_data,
-                  REFLORA = reflora,
-                  JABOT = jabot)
+data_list <- list(GBIF = data_gbif,
+                  speciesLink = data_speciesLink,
+                  REFLORA = data_reflora,
+                  JABOT = data_jabot)
 ```
 
-Use `barRoso` function to combine the sources.
+Use `barRoso::barroso_cat` function to combine the sources.
 
 ```{r eval = FALSE}
 

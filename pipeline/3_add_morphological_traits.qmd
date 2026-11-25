@@ -46,17 +46,22 @@ trait_data_path <- file.path("output_data/", paste0("trait_data_",  timestamp_ta
 
 ## Inspect available traits (optional)
 
-`traits_database` is a reference data frame bundled with the package, listing every qualitative and quantitative trait currently implemented — including its full name, abbreviated code, trait type, and the trait set (`trait_scope`) it belongs to. Inspecting it before running `morph_add_traits()` helps decide which default and taxon-specific traits to request.
+`morph_trait_data()` is a function to generate reference data frame bundled with the package, listing every qualitative and quantitative trait currently implemented — including its full name, abbreviated code, trait type, and the trait set (`trait_scope`) it belongs to. Inspecting it before running `morph_add_traits()` helps decide which default and taxon-specific traits to request.
 
 ```{r eval = FALSE}
 
-data(traits_database)
+# Generate the morphological traits database
+traits_database <- morph_trait_data()
 
-# available trait sets
-unique(traits_database$trait_scope)
+# Inspect the database
+head(traits_database)
 
-# traits for a given group, e.g. Passifloraceae
-subset(traits_database, trait_scope == "passifloraceae")
+# Available taxonomic groups
+sort(unique(traits_database$trait_scope))
+
+# Number of traits by type
+table(traits_database$trait_type)
+
 ```
 
 ## morph_add_traits()

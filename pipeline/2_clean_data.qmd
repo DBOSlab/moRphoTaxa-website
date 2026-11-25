@@ -55,22 +55,10 @@ clean_data_path <- file.path("output_data/", paste0("clean_data_",  timestamp_ta
 
 ## Harmonize dataset structure
 
-Different biodiversity databases provide slightly different field structures.The following step harmonizes the dataset structure by selecting relevant fields and inserting missing columns.
+Different biodiversity databases provide slightly different field structures.The following step harmonizes the dataset structure by selecting relevant fields and filtering only preserved specimens.
 
 ```{r eval = FALSE}
 cols <- c(names(data_reflora))
-
-cols <- insert_after_word(cols, c(
-  basisOfRecord = "gbifID",
-  stateProvince = "county",
-  scientificName = "acceptedScientificName",
-  maximumElevationInMeters = "elevation",
-  identificationRemarks = "vernacularName",
-  identificationRemarks = "eventRemarks",
-  fieldNotes = "habitat",
-  day = "lifeStage",
-  catalogNumber = "barcode"
-))
 
 all_data <- all_data %>%
   select(any_of(cols)) %>%

@@ -99,7 +99,7 @@ morph_similarity(analysis_data = morphmatrix,
                  sim_p_adjust = "BH",
                  sim_alpha = 0.05,
                  sim_min_n = 5,
-                 sim_pairs = NULL
+                 sim_pairs = NULL,
                  file_formats = "jpeg")
 ```
 
