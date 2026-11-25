@@ -2,59 +2,59 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/geo_matrix_setting.html</loc>
-    <lastmod>2026-09-27T13:19:44.145Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.922Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/geo_bioclim_exploratory.html</loc>
-    <lastmod>2026-09-27T13:19:44.136Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.919Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_kmeans.html</loc>
-    <lastmod>2026-09-27T13:19:44.173Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.934Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_boxplots.html</loc>
-    <lastmod>2026-09-27T13:19:44.162Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.930Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_nmds.html</loc>
-    <lastmod>2026-09-27T13:19:44.183Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.939Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_pca.html</loc>
-    <lastmod>2026-09-27T13:19:44.189Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.943Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_kruskal.html</loc>
-    <lastmod>2026-09-27T13:19:44.176Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.935Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/index.html</loc>
-    <lastmod>2026-09-27T13:19:44.201Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.926Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_cva.html</loc>
-    <lastmod>2026-09-27T13:19:44.165Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.931Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/geo_niche_overlap.html</loc>
-    <lastmod>2026-09-27T13:19:44.154Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.925Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_permanova.html</loc>
-    <lastmod>2026-09-27T13:19:44.195Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.945Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_matrix_setting.html</loc>
-    <lastmod>2026-09-27T13:19:44.181Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.938Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_similarity.html</loc>
-    <lastmod>2026-09-27T13:19:44.196Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.946Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/fill_missing_traits.html</loc>
-    <lastmod>2026-09-27T13:19:44.124Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.917Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/authors/index.html</loc>
@@ -62,78 +62,78 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/pipeline/2_clean_data.html</loc>
-    <lastmod>2026-11-19T20:54:18.019Z</lastmod>
+    <lastmod>2026-11-24T17:30:50.630Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/pipeline/3_add_morphological_traits.html</loc>
-    <lastmod>2026-09-27T13:10:46.226Z</lastmod>
+    <lastmod>2026-11-24T17:36:35.412Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/pipeline/1_get_herbarium_specimens.html</loc>
-    <lastmod>2026-11-19T20:30:21.877Z</lastmod>
+    <lastmod>2026-11-24T17:28:58.836Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/pipeline/index.html</loc>
-    <lastmod>2026-09-27T13:10:22.654Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.916Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/pipeline/4_analysis.html</loc>
-    <lastmod>2026-09-27T13:10:46.226Z</lastmod>
+    <lastmod>2026-11-24T17:37:55.564Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/index.html</loc>
-    <lastmod>2026-09-27T13:48:24.073Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.846Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_autocorrelation.html</loc>
-    <lastmod>2026-09-27T13:19:44.161Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.929Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_anova.html</loc>
-    <lastmod>2026-09-27T13:19:44.158Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.928Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_dapc.html</loc>
-    <lastmod>2026-09-27T13:19:44.167Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.932Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/geo_morph_mantel.html</loc>
-    <lastmod>2026-09-27T13:19:44.147Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.923Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_pcoa.html</loc>
-    <lastmod>2026-09-27T13:19:44.192Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.944Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_dendrogram.html</loc>
-    <lastmod>2026-09-27T13:19:44.170Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.933Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_add_traits.html</loc>
-    <lastmod>2026-09-27T13:19:44.156Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.927Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_lda.html</loc>
-    <lastmod>2026-09-27T13:19:44.178Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.937Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/geo_bioclim_maps.html</loc>
-    <lastmod>2026-09-27T13:19:44.139Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.920Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_nmm.html</loc>
-    <lastmod>2026-09-27T13:19:44.186Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.941Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/morph_normality.html</loc>
-    <lastmod>2026-09-27T13:19:44.187Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.942Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/geo_enm.html</loc>
-    <lastmod>2026-09-27T13:19:44.142Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.921Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/moRphoTaxa-website/reference/geo_morph_rda.html</loc>
-    <lastmod>2026-09-27T13:19:44.150Z</lastmod>
+    <lastmod>2026-11-24T17:25:08.924Z</lastmod>
   </url>
 </urlset>
